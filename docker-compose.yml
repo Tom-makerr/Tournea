@@ -1,0 +1,43 @@
+version: '3.8'
+
+services:
+  app:
+    build: .
+    ports:
+      - "3000:3000"
+    environment:
+      NODE_ENV: production
+      JWT_SECRET: ${JWT_SECRET}
+      ENCRYPTION_KEY: ${ENCRYPTION_KEY}
+      ALLOWED_ORIGIN: ${ALLOWED_ORIGIN:-https://localhost:3000}
+      DATABASE_URL: ${DATABASE_URL:-sqlite:./data.db}
+    volumes:
+      - ./data:/app/data
+    restart: unless-stopped
+    networks:
+      - laposte-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  nginx:
+    image: nginx:latest
+    ports:
+      - "443:443"
+      - "80:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./cert.pem:/etc/nginx/cert.pem:ro
+      - ./key.pem:/etc/nginx/key.pem:ro
+    depends_on:
+      - app
+    networks:
+      - laposte-network
+    restart: unless-stopped
+
+networks:
+  laposte-network:
+    driver: bridge

@@ -1,0 +1,862 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>La Poste — Gestion des Tournées</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --bg:#060612;
+  --bg2:#0d0d20;
+  --panel:rgba(255,255,255,0.04);
+  --panel-border:rgba(255,255,255,0.09);
+  --glass:rgba(255,255,255,0.06);
+  --glass-border:rgba(255,255,255,0.12);
+  --yellow:#FFD100;
+  --yellow2:#ffb300;
+  --neon:#00d4ff;
+  --neon2:#0099cc;
+  --purple:#7c3aed;
+  --text:#e8e8ff;
+  --text2:#9898b8;
+  --text3:#5a5a7a;
+  --radius:16px;
+  --shadow:0 8px 32px rgba(0,0,0,0.5);
+}
+body{
+  font-family:'Space Grotesk',sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  min-height:100vh;
+  overflow:hidden;
+}
+body::before{
+  content:'';
+  position:fixed;inset:0;
+  background:
+    radial-gradient(ellipse 80% 60% at 20% -10%, rgba(0,150,255,0.12) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 50% at 80% 110%, rgba(124,58,237,0.1) 0%, transparent 60%),
+    radial-gradient(ellipse 40% 40% at 50% 50%, rgba(255,209,0,0.03) 0%, transparent 70%);
+  pointer-events:none;z-index:0;
+}
+#root{position:relative;z-index:1;height:100vh;display:flex;flex-direction:column;}
+
+/* ─── Header ─── */
+.header{
+  display:flex;align-items:center;gap:16px;
+  padding:14px 24px;
+  background:rgba(6,6,18,0.85);
+  backdrop-filter:blur(24px);
+  border-bottom:1px solid var(--panel-border);
+  flex-shrink:0;
+}
+.logo-badge{
+  width:36px;height:36px;border-radius:10px;
+  background:var(--yellow);
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Space Mono',monospace;font-weight:700;font-size:13px;color:#000;
+  flex-shrink:0;
+}
+.header-title{font-size:16px;font-weight:600;letter-spacing:-.3px;}
+.header-sub{font-size:12px;color:var(--text2);margin-top:1px;}
+.header-right{margin-left:auto;display:flex;align-items:center;gap:10px;}
+.month-nav{display:flex;align-items:center;gap:8px;}
+.month-btn{
+  width:30px;height:30px;border-radius:8px;border:1px solid var(--glass-border);
+  background:var(--glass);color:var(--text);cursor:pointer;
+  display:flex;align-items:center;justify-content:center;font-size:14px;
+  transition:all .2s;
+}
+.month-btn:hover{background:rgba(255,255,255,0.1);border-color:var(--neon);}
+.month-label{font-size:14px;font-weight:600;min-width:130px;text-align:center;letter-spacing:-.2px;}
+.tab-bar{display:flex;gap:4px;background:var(--glass);border:1px solid var(--glass-border);border-radius:12px;padding:4px;}
+.tab{padding:6px 14px;border-radius:8px;font-size:13px;font-weight:500;cursor:pointer;color:var(--text2);transition:all .2s;white-space:nowrap;}
+.tab.active{background:var(--yellow);color:#000;}
+.tab:not(.active):hover{color:var(--text);background:rgba(255,255,255,0.06);}
+.btn{
+  padding:7px 16px;border-radius:10px;border:none;font-family:inherit;font-size:13px;font-weight:600;cursor:pointer;
+  display:inline-flex;align-items:center;gap:6px;transition:all .2s;white-space:nowrap;
+}
+.btn-yellow{background:var(--yellow);color:#000;}
+.btn-yellow:hover{background:var(--yellow2);transform:translateY(-1px);}
+.btn-ghost{background:var(--glass);border:1px solid var(--glass-border);color:var(--text);}
+.btn-ghost:hover{background:rgba(255,255,255,0.1);}
+.btn-neon{background:rgba(0,212,255,0.15);border:1px solid rgba(0,212,255,0.35);color:var(--neon);}
+.btn-neon:hover{background:rgba(0,212,255,0.25);}
+.btn-danger{background:rgba(239,68,68,0.15);border:1px solid rgba(239,68,68,0.3);color:#f87171;}
+.btn-danger:hover{background:rgba(239,68,68,0.25);}
+
+/* ─── Main layout ─── */
+.main{flex:1;display:flex;overflow:hidden;gap:0;}
+
+/* ─── Planning panel ─── */
+.planning-wrap{flex:1;overflow:hidden;display:flex;flex-direction:column;padding:16px 0 16px 16px;}
+.panel{background:var(--panel);border:1px solid var(--panel-border);border-radius:var(--radius);overflow:hidden;display:flex;flex-direction:column;}
+.panel-header{padding:12px 16px;border-bottom:1px solid var(--panel-border);display:flex;align-items:center;gap:10px;flex-shrink:0;}
+.panel-title{font-size:13px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.8px;}
+.panel-body{flex:1;overflow:auto;}
+
+/* ─── Calendar grid ─── */
+.calendar-grid{
+  display:grid;
+  grid-template-columns:160px repeat(var(--days),minmax(28px,1fr));
+  min-width:max-content;
+}
+.cal-head-cell{
+  padding:6px 4px;text-align:center;font-size:10px;font-weight:600;
+  color:var(--text3);text-transform:uppercase;letter-spacing:.5px;
+  border-bottom:1px solid var(--panel-border);position:sticky;top:0;
+  background:var(--bg2);z-index:2;
+}
+.cal-head-cell.today-col{color:var(--neon);}
+.cal-agent-cell{
+  padding:6px 10px;font-size:12px;font-weight:500;
+  border-bottom:1px solid rgba(255,255,255,0.04);
+  border-right:1px solid rgba(255,255,255,0.04);
+  display:flex;align-items:center;gap:6px;
+  white-space:nowrap;overflow:hidden;
+  position:sticky;left:0;background:var(--bg2);z-index:1;
+}
+.agent-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+.cal-day-cell{
+  border-bottom:1px solid rgba(255,255,255,0.04);
+  border-right:1px solid rgba(255,255,255,0.04);
+  cursor:pointer;transition:all .15s;
+  position:relative;min-height:30px;
+  display:flex;align-items:center;justify-content:center;
+}
+.cal-day-cell:hover{background:rgba(255,255,255,0.08);}
+.cal-day-cell.selected-day{background:rgba(0,212,255,0.12);outline:1px inset rgba(0,212,255,0.4);}
+.cal-day-cell.today-col{background:rgba(255,209,0,0.04);}
+.cal-day-cell.weekend{background:rgba(255,255,255,0.015);}
+.abs-chip{
+  width:calc(100% - 4px);height:calc(100% - 4px);
+  border-radius:4px;font-size:9px;font-weight:700;
+  display:flex;align-items:center;justify-content:center;
+  letter-spacing:.3px;
+}
+.abs-dot{width:6px;height:6px;border-radius:50%;}
+
+/* ─── Day assignment panel ─── */
+.assign-wrap{width:340px;flex-shrink:0;overflow:hidden;display:flex;flex-direction:column;padding:16px;}
+.day-header{
+  display:flex;align-items:center;justify-content:space-between;
+  margin-bottom:12px;flex-shrink:0;
+}
+.day-title{font-size:16px;font-weight:700;}
+.day-sub{font-size:11px;color:var(--text2);margin-top:2px;}
+.present-chips{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:10px;}
+.agent-chip{
+  padding:3px 8px;border-radius:6px;font-size:11px;font-weight:500;
+  background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.1);
+  cursor:pointer;transition:all .15s;
+}
+.agent-chip:hover{background:rgba(255,255,255,0.12);}
+.agent-chip.absent-chip{opacity:.4;text-decoration:line-through;cursor:default;}
+.tournee-list{flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:4px;}
+.tournee-row{
+  display:flex;align-items:center;gap:8px;padding:7px 10px;
+  border-radius:10px;background:var(--glass);border:1px solid var(--glass-border);
+  transition:all .15s;
+}
+.tournee-row:hover{background:rgba(255,255,255,0.08);}
+.tournee-num{
+  width:32px;height:22px;border-radius:5px;font-size:10px;font-weight:700;
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+  font-family:'Space Mono',monospace;
+}
+.tournee-name{flex:1;font-size:12px;font-weight:500;}
+.assign-select{
+  background:rgba(0,0,0,0.3);border:1px solid var(--glass-border);color:var(--text);
+  border-radius:7px;font-family:inherit;font-size:11px;padding:3px 6px;cursor:pointer;
+  max-width:100px;
+}
+.assign-select:focus{outline:none;border-color:var(--neon);}
+
+/* ─── Agents tab ─── */
+.agents-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px;padding:16px;}
+.agent-card{
+  background:var(--panel);border:1px solid var(--panel-border);border-radius:var(--radius);
+  padding:16px;transition:all .2s;
+}
+.agent-card:hover{border-color:var(--glass-border);background:var(--glass);}
+.agent-card-header{display:flex;align-items:center;gap:10px;margin-bottom:12px;}
+.agent-avatar{
+  width:40px;height:40px;border-radius:12px;
+  display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;color:#000;flex-shrink:0;
+}
+.agent-name-input{
+  background:transparent;border:none;color:var(--text);font-family:inherit;font-size:14px;font-weight:600;width:100%;
+  border-bottom:1px solid transparent;transition:.2s;
+}
+.agent-name-input:focus{outline:none;border-bottom-color:var(--yellow);}
+.agent-role{font-size:11px;color:var(--text2);}
+.pref-section{margin-top:8px;}
+.pref-label{font-size:11px;color:var(--text2);margin-bottom:6px;display:flex;align-items:center;gap:6px;}
+.toggle{
+  width:32px;height:18px;border-radius:9px;cursor:pointer;
+  background:var(--glass);border:1px solid var(--glass-border);position:relative;transition:.2s;
+}
+.toggle.on{background:var(--yellow);}
+.toggle::after{
+  content:'';position:absolute;top:2px;left:2px;
+  width:12px;height:12px;border-radius:50%;background:#000;transition:.2s;
+}
+.toggle.on::after{left:16px;}
+.pref-pills{display:flex;flex-wrap:wrap;gap:4px;max-height:80px;overflow-y:auto;}
+.pref-pill{
+  padding:2px 7px;border-radius:5px;font-size:10px;font-weight:600;cursor:pointer;
+  border:1px solid rgba(255,255,255,0.1);transition:.15s;
+  font-family:'Space Mono',monospace;
+}
+.pref-pill.selected{background:var(--neon);color:#000;border-color:var(--neon);}
+.pref-pill:not(.selected){background:rgba(255,255,255,0.04);color:var(--text2);}
+.pref-pill:hover{background:rgba(0,212,255,0.15);}
+
+/* ─── Tournées tab ─── */
+.tournees-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:8px;padding:16px;}
+.tournee-card{
+  background:var(--panel);border:1px solid var(--panel-border);border-radius:12px;
+  padding:12px;display:flex;align-items:center;gap:10px;
+}
+.t-num{
+  width:36px;height:36px;border-radius:9px;font-size:11px;font-weight:700;
+  display:flex;align-items:center;justify-content:center;font-family:'Space Mono',monospace;flex-shrink:0;
+}
+.t-name-input{
+  background:transparent;border:none;color:var(--text);font-family:inherit;font-size:13px;font-weight:500;flex:1;min-width:0;
+  border-bottom:1px solid transparent;transition:.2s;
+}
+.t-name-input:focus{outline:none;border-bottom-color:var(--neon);}
+
+/* ─── Stats bar ─── */
+.stats-bar{
+  display:flex;gap:12px;padding:10px 16px;
+  border-top:1px solid var(--panel-border);flex-shrink:0;
+  background:rgba(6,6,18,0.6);backdrop-filter:blur(12px);
+}
+.stat-item{display:flex;align-items:center;gap:6px;font-size:12px;}
+.stat-dot{width:8px;height:8px;border-radius:50%;}
+.stat-val{font-weight:700;color:var(--text);}
+.stat-lbl{color:var(--text2);}
+
+/* ─── Modal ─── */
+.overlay{
+  position:fixed;inset:0;background:rgba(0,0,0,0.7);backdrop-filter:blur(8px);
+  z-index:100;display:flex;align-items:center;justify-content:center;
+  animation:fadeIn .15s ease;
+}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.modal{
+  background:#0e0e22;border:1px solid var(--glass-border);border-radius:20px;
+  padding:24px;min-width:360px;max-width:90vw;
+  animation:slideUp .2s ease;
+  box-shadow:0 24px 80px rgba(0,0,0,0.8);
+}
+@keyframes slideUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+.modal-title{font-size:16px;font-weight:700;margin-bottom:6px;}
+.modal-sub{font-size:13px;color:var(--text2);margin-bottom:18px;}
+.modal-footer{display:flex;gap:8px;justify-content:flex-end;margin-top:20px;}
+.abs-type-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
+.abs-type-btn{
+  padding:10px 8px;border-radius:10px;border:1px solid rgba(255,255,255,0.1);
+  background:rgba(255,255,255,0.03);cursor:pointer;text-align:center;
+  font-family:inherit;font-size:11px;font-weight:600;color:var(--text2);transition:.2s;
+}
+.abs-type-btn:hover,.abs-type-btn.selected{border-color:var(--c);color:var(--c);background:color-mix(in srgb,var(--c) 15%,transparent);}
+.date-range{display:flex;gap:10px;margin-bottom:16px;}
+.date-input{
+  flex:1;background:rgba(0,0,0,0.3);border:1px solid var(--glass-border);
+  color:var(--text);font-family:inherit;font-size:13px;padding:8px 12px;border-radius:10px;
+}
+.date-input:focus{outline:none;border-color:var(--yellow);}
+label.field-label{font-size:12px;color:var(--text2);display:block;margin-bottom:6px;}
+
+/* ─── Scrollbars ─── */
+::-webkit-scrollbar{width:6px;height:6px;}
+::-webkit-scrollbar-track{background:transparent;}
+::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.1);border-radius:3px;}
+::-webkit-scrollbar-thumb:hover{background:rgba(255,255,255,0.2);}
+
+/* ─── Legend ─── */
+.legend{display:flex;flex-wrap:wrap;gap:6px;padding:8px 16px;border-top:1px solid var(--panel-border);}
+.legend-item{display:flex;align-items:center;gap:4px;font-size:10px;color:var(--text2);}
+.legend-box{width:14px;height:14px;border-radius:3px;}
+
+.nouncover{
+  padding:6px 10px;border-radius:8px;background:rgba(255,60,60,0.12);
+  border:1px solid rgba(255,60,60,0.25);font-size:11px;color:#f87171;
+  display:flex;align-items:center;gap:5px;
+}
+.cover-ok{
+  padding:6px 10px;border-radius:8px;background:rgba(0,212,100,0.12);
+  border:1px solid rgba(0,212,100,0.25);font-size:11px;color:#34d399;
+  display:flex;align-items:center;gap:5px;
+}
+
+.divider{height:1px;background:var(--panel-border);margin:8px 0;}
+input[type=date]::-webkit-calendar-picker-indicator{filter:invert(.5);}
+</style>
+</head>
+<body>
+<div id="root"></div>
+
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+
+<script type="text/babel">
+const {useState,useEffect,useCallback,useMemo,useRef}=React;
+
+// ─── Constants ───────────────────────────────────────────────────────────────
+const ABSENCE_TYPES=[
+  {code:'CP',label:'Congés Payés',color:'#22c55e'},
+  {code:'MAL',label:'Maladie',color:'#ef4444'},
+  {code:'FORM',label:'Formation',color:'#3b82f6'},
+  {code:'RC',label:'Repos Comp.',color:'#f97316'},
+  {code:'AT',label:'Acc. Travail',color:'#a855f7'},
+  {code:'CSE',label:'CSE/RPX',color:'#06b6d4'},
+  {code:'CARC',label:'CA/RC',color:'#ec4899'},
+  {code:'ATM',label:'ATM/ATA',color:'#64748b'},
+  {code:'ASA',label:'ASA',color:'#fbbf24'},
+  {code:'AUTRE',label:'Autre',color:'#6b7280'},
+];
+const ABS_MAP=Object.fromEntries(ABSENCE_TYPES.map(a=>[a.code,a]));
+
+const AGENT_COLORS=['#FFD100','#00d4ff','#a855f7','#22c55e','#ef4444','#f97316','#ec4899','#06b6d4','#fbbf24','#8b5cf6','#10b981','#f43f5e','#0ea5e9','#84cc16','#e11d48'];
+
+const TOURNEE_COLORS=['#1e3a5f','#1a3a2a','#3a1a3a','#3a2a1a','#1a2a3a','#2a1a1a','#1a3a3a','#2a2a1a','#3a1a2a','#1a2a2a'];
+
+const FR_MONTHS=['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
+const FR_DAYS=['L','M','M','J','V','S','D'];
+
+const DEFAULT_AGENTS=Array.from({length:15},(_,i)=>({
+  id:i+1,
+  name:`Agent ${String.fromCharCode(65+i < 91 ? 65+i : 65)} ${i+1}`,
+  color:AGENT_COLORS[i%AGENT_COLORS.length],
+  prefEnabled:false,
+  preferred:[],
+}));
+
+const DEFAULT_TOURNEES=Array.from({length:40},(_,i)=>({
+  id:i+1,
+  name:`Tournée ${String(i+1).padStart(2,'0')}`,
+  color:TOURNEE_COLORS[i%TOURNEE_COLORS.length],
+}));
+
+function fmt(d){return`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;}
+function parseDate(s){const[y,m,d]=s.split('-').map(Number);return new Date(y,m-1,d);}
+
+// ─── Algo d'attribution ────────────────────────────────────────────────────────
+function autoAssign(agents,tournees,absencesMap,dateStr){
+  const presentAgents=agents.filter(a=>{
+    return !absencesMap[`${a.id}__${dateStr}`];
+  });
+  if(!presentAgents.length)return{};
+
+  const result={};
+  let agentIdx=0;
+
+  tournees.forEach(t=>{
+    // agents eligibles (pref ou tous)
+    const eligible=presentAgents.filter(a=>{
+      if(a.prefEnabled && a.preferred.length>0)return a.preferred.includes(t.id);
+      return true;
+    });
+    if(!eligible.length){
+      // fallback sans filtre pref
+      const fallback=presentAgents.filter(a=>!a.prefEnabled||a.preferred.length===0);
+      if(fallback.length){
+        result[t.id]=fallback[agentIdx%fallback.length].id;
+      } else {
+        result[t.id]=presentAgents[agentIdx%presentAgents.length].id;
+      }
+    } else {
+      result[t.id]=eligible[agentIdx%eligible.length].id;
+    }
+    agentIdx++;
+  });
+  return result;
+}
+
+// ─── AbsenceModal ─────────────────────────────────────────────────────────────
+function AbsenceModal({agent,date,existing,onSave,onDelete,onClose}){
+  const[selType,setSelType]=useState(existing?.type||'CP');
+  const[dateFrom,setDateFrom]=useState(existing?.dateFrom||date);
+  const[dateTo,setDateTo]=useState(existing?.dateTo||date);
+
+  const save=()=>{
+    const from=dateFrom<=dateTo?dateFrom:dateTo;
+    const to=dateFrom<=dateTo?dateTo:dateFrom;
+    // génère toutes les dates entre from et to
+    const dates=[];
+    let cur=parseDate(from);
+    const end=parseDate(to);
+    while(cur<=end){dates.push(fmt(cur));cur.setDate(cur.getDate()+1);}
+    onSave(agent.id,dates,selType);
+  };
+
+  return(
+    <div className="overlay" onClick={e=>{if(e.target===e.currentTarget)onClose();}}>
+      <div className="modal">
+        <div className="modal-title">Absence — {agent.name}</div>
+        <div className="modal-sub">Définir une absence sur une ou plusieurs dates</div>
+        <label className="field-label">Période</label>
+        <div className="date-range">
+          <input type="date" className="date-input" value={dateFrom} onChange={e=>setDateFrom(e.target.value)}/>
+          <input type="date" className="date-input" value={dateTo} onChange={e=>setDateTo(e.target.value)}/>
+        </div>
+        <label className="field-label">Type d'absence</label>
+        <div className="abs-type-grid">
+          {ABSENCE_TYPES.map(t=>(
+            <button key={t.code} className={`abs-type-btn${selType===t.code?' selected':''}`}
+              style={{'--c':t.color}} onClick={()=>setSelType(t.code)}>
+              <span style={{fontSize:13,display:'block',marginBottom:2,color:t.color}}>●</span>
+              {t.label}
+            </button>
+          ))}
+        </div>
+        <div className="modal-footer">
+          {existing && <button className="btn btn-danger" onClick={()=>onDelete(agent.id,date)}>Supprimer</button>}
+          <button className="btn btn-ghost" onClick={onClose}>Annuler</button>
+          <button className="btn btn-yellow" onClick={save}>Enregistrer</button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ─── Main App ─────────────────────────────────────────────────────────────────
+function App(){
+  const now=new Date();
+  const[year,setYear]=useState(now.getFullYear());
+  const[month,setMonth]=useState(now.getMonth());
+  const[tab,setTab]=useState('planning');
+  const[selectedDay,setSelectedDay]=useState(fmt(now));
+  const[absModal,setAbsModal]=useState(null);// {agent,date,existing}
+  
+  const[agents,setAgents]=useState(()=>{
+    try{return JSON.parse(localStorage.getItem('lp_agents'))||DEFAULT_AGENTS;}catch{return DEFAULT_AGENTS;}
+  });
+  const[tournees,setTournees]=useState(()=>{
+    try{return JSON.parse(localStorage.getItem('lp_tournees'))||DEFAULT_TOURNEES;}catch{return DEFAULT_TOURNEES;}
+  });
+  const[absences,setAbsences]=useState(()=>{
+    try{return JSON.parse(localStorage.getItem('lp_absences'))||{};}catch{return {};}
+  });
+  const[assignments,setAssignments]=useState(()=>{
+    try{return JSON.parse(localStorage.getItem('lp_assignments'))||{};}catch{return {};}
+  });
+
+  useEffect(()=>{localStorage.setItem('lp_agents',JSON.stringify(agents));},[agents]);
+  useEffect(()=>{localStorage.setItem('lp_tournees',JSON.stringify(tournees));},[tournees]);
+  useEffect(()=>{localStorage.setItem('lp_absences',JSON.stringify(absences));},[absences]);
+  useEffect(()=>{localStorage.setItem('lp_assignments',JSON.stringify(assignments));},[assignments]);
+
+  // absMap: "agentId__dateStr" -> absence obj
+  const absMap=useMemo(()=>{
+    const m={};
+    Object.values(absences).forEach(abs=>{
+      abs.forEach(a=>{ m[`${a.agentId}__${a.date}`]=a; });
+    });
+    return m;
+  },[absences]);
+
+  const daysInMonth=new Date(year,month+1,0).getDate();
+  const firstDow=(new Date(year,month,1).getDay()+6)%7; // 0=lundi
+
+  const todayStr=fmt(now);
+
+  function prevMonth(){
+    if(month===0){setMonth(11);setYear(y=>y-1);}
+    else setMonth(m=>m-1);
+  }
+  function nextMonth(){
+    if(month===11){setMonth(0);setYear(y=>y+1);}
+    else setMonth(m=>m+1);
+  }
+
+  function handleCellClick(agent,dayNum){
+    const dateStr=`${year}-${String(month+1).padStart(2,'0')}-${String(dayNum).padStart(2,'0')}`;
+    const existing=absMap[`${agent.id}__${dateStr}`];
+    setAbsModal({agent,date:dateStr,existing});
+  }
+
+  function saveAbsence(agentId,dates,type){
+    setAbsences(prev=>{
+      const next={...prev};
+      const key=`${agentId}`;
+      const existing=(next[key]||[]).filter(a=>!dates.includes(a.date));
+      const added=dates.map(d=>({agentId,date:d,type,dateFrom:dates[0],dateTo:dates[dates.length-1]}));
+      next[key]=[...existing,...added];
+      return next;
+    });
+    setAbsModal(null);
+  }
+
+  function deleteAbsence(agentId,date){
+    setAbsences(prev=>{
+      const next={...prev};
+      const key=`${agentId}`;
+      next[key]=(next[key]||[]).filter(a=>a.date!==date);
+      return next;
+    });
+    setAbsModal(null);
+  }
+
+  function handleAutoAssign(){
+    const res=autoAssign(agents,tournees,absMap,selectedDay);
+    setAssignments(prev=>({...prev,[selectedDay]:res}));
+  }
+
+  function setAssignment(dateStr,tourneeId,agentId){
+    setAssignments(prev=>({
+      ...prev,
+      [dateStr]:{...(prev[dateStr]||{}),[tourneeId]:agentId||null}
+    }));
+  }
+
+  function updateAgentName(id,name){setAgents(prev=>prev.map(a=>a.id===id?{...a,name}:a));}
+  function updateAgentPref(id,prefEnabled){setAgents(prev=>prev.map(a=>a.id===id?{...a,prefEnabled}:a));}
+  function toggleAgentTournee(id,tId){
+    setAgents(prev=>prev.map(a=>{
+      if(a.id!==id)return a;
+      const has=a.preferred.includes(tId);
+      return{...a,preferred:has?a.preferred.filter(x=>x!==tId):[...a.preferred,tId]};
+    }));
+  }
+  function addAgent(){
+    const id=Math.max(0,...agents.map(a=>a.id))+1;
+    setAgents(prev=>[...prev,{id,name:`Nouvel Agent ${id}`,color:AGENT_COLORS[id%AGENT_COLORS.length],prefEnabled:false,preferred:[]}]);
+  }
+  function removeAgent(id){setAgents(prev=>prev.filter(a=>a.id!==id));}
+  function updateTourneeName(id,name){setTournees(prev=>prev.map(t=>t.id===id?{...t,name}:t));}
+  function addTournee(){
+    const id=Math.max(0,...tournees.map(t=>t.id))+1;
+    setTournees(prev=>[...prev,{id,name:`Tournée ${String(id).padStart(2,'0')}`,color:TOURNEE_COLORS[id%TOURNEE_COLORS.length]}]);
+  }
+  function removeTournee(id){setTournees(prev=>prev.filter(t=>t.id!==id));}
+
+  // Stats du jour sélectionné
+  const dayAbsents=useMemo(()=>agents.filter(a=>absMap[`${a.id}__${selectedDay}`]),[agents,absMap,selectedDay]);
+  const dayPresents=useMemo(()=>agents.filter(a=>!absMap[`${a.id}__${selectedDay}`]),[agents,absMap,selectedDay]);
+  const dayAssign=assignments[selectedDay]||{};
+  const coveredTournees=Object.values(dayAssign).filter(Boolean).length;
+
+  // Export CSV
+  function exportCSV(){
+    const rows=[['Agent',...Array.from({length:daysInMonth},(_,i)=>`${year}-${String(month+1).padStart(2,'0')}-${String(i+1).padStart(2,'0')}`)].join(',')];
+    agents.forEach(a=>{
+      const cells=[a.name];
+      for(let d=1;d<=daysInMonth;d++){
+        const ds=`${year}-${String(month+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+        const abs=absMap[`${a.id}__${ds}`];
+        cells.push(abs?abs.type:'P');
+      }
+      rows.push(cells.join(','));
+    });
+    const blob=new Blob([rows.join('\n')],{type:'text/csv'});
+    const url=URL.createObjectURL(blob);
+    const a=document.createElement('a');a.href=url;a.download=`planning_${year}_${month+1}.csv`;a.click();
+  }
+
+  function printPlanning(){window.print();}
+
+  // Month stats
+  const totalAbsJour=useMemo(()=>{
+    let n=0;
+    for(let d=1;d<=daysInMonth;d++){
+      const ds=`${year}-${String(month+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+      agents.forEach(a=>{if(absMap[`${a.id}__${ds}`])n++;});
+    }
+    return n;
+  },[agents,absMap,year,month,daysInMonth]);
+
+  const selectedDateObj=parseDate(selectedDay);
+  const selectedDayLabel=selectedDateObj.toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long'});
+
+  return(
+    <div id="root">
+      {/* ── Header ── */}
+      <header className="header">
+        <div className="logo-badge">LP</div>
+        <div>
+          <div className="header-title">La Poste — Gestion des Tournées</div>
+          <div className="header-sub">Centre de distribution · {agents.length} agents · {tournees.length} tournées</div>
+        </div>
+        <div className="header-right">
+          {tab==='planning'&&(
+            <div className="month-nav">
+              <button className="month-btn" onClick={prevMonth}>‹</button>
+              <span className="month-label">{FR_MONTHS[month]} {year}</span>
+              <button className="month-btn" onClick={nextMonth}>›</button>
+            </div>
+          )}
+          <div className="tab-bar">
+            {[['planning','Planning'],['agents','Agents'],['tournees','Tournées']].map(([k,l])=>(
+              <div key={k} className={`tab${tab===k?' active':''}`} onClick={()=>setTab(k)}>{l}</div>
+            ))}
+          </div>
+          <button className="btn btn-ghost" onClick={exportCSV} title="Export CSV">↓ CSV</button>
+          <button className="btn btn-ghost" onClick={printPlanning} title="Imprimer">⎙</button>
+        </div>
+      </header>
+
+      {/* ── Planning Tab ── */}
+      {tab==='planning'&&(
+        <div className="main">
+          {/* Calendar */}
+          <div className="planning-wrap">
+            <div className="panel" style={{flex:1}}>
+              <div className="panel-header">
+                <span className="panel-title">Planning mensuel</span>
+                <span style={{marginLeft:'auto',fontSize:12,color:'var(--text2)'}}>
+                  {totalAbsJour} absences ce mois
+                </span>
+              </div>
+              <div className="panel-body">
+                <div className="calendar-grid" style={{'--days':daysInMonth}}>
+                  {/* Header */}
+                  <div className="cal-head-cell" style={{textAlign:'left',paddingLeft:10}}>Agent</div>
+                  {Array.from({length:daysInMonth},(_,i)=>{
+                    const d=i+1;
+                    const dow=new Date(year,month,d).getDay();
+                    const isWe=dow===0||dow===6;
+                    const ds=`${year}-${String(month+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+                    return(
+                      <div key={d} className={`cal-head-cell${ds===todayStr?' today-col':''}`}>
+                        <div>{FR_DAYS[(dow+6)%7]}</div>
+                        <div style={{fontFamily:"'Space Mono',monospace",fontSize:9,marginTop:1}}>{d}</div>
+                      </div>
+                    );
+                  })}
+                  {/* Agent rows */}
+                  {agents.map(agent=>(
+                    <React.Fragment key={agent.id}>
+                      <div className="cal-agent-cell">
+                        <div className="agent-dot" style={{background:agent.color}}/>
+                        <span style={{fontSize:11,overflow:'hidden',textOverflow:'ellipsis'}}>{agent.name}</span>
+                      </div>
+                      {Array.from({length:daysInMonth},(_,i)=>{
+                        const d=i+1;
+                        const dow=new Date(year,month,d).getDay();
+                        const isWe=dow===0||dow===6;
+                        const ds=`${year}-${String(month+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+                        const abs=absMap[`${agent.id}__${ds}`];
+                        const absType=abs?ABS_MAP[abs.type]:null;
+                        return(
+                          <div key={d}
+                            className={`cal-day-cell${isWe?' weekend':''}${ds===selectedDay?' selected-day':''}${ds===todayStr?' today-col':''}`}
+                            onClick={()=>{setSelectedDay(ds);if(!isWe)handleCellClick(agent,d);}}
+                            title={abs?`${agent.name} — ${absType?.label||abs.type}`:'Présent — cliquer pour marquer absent'}
+                          >
+                            {abs&&(
+                              <div className="abs-chip"
+                                style={{background:`${absType?.color}22`,color:absType?.color}}>
+                                {abs.type}
+                              </div>
+                            )}
+                          </div>
+                        );
+                      })}
+                    </React.Fragment>
+                  ))}
+                </div>
+              </div>
+              <div className="legend">
+                {ABSENCE_TYPES.map(t=>(
+                  <div key={t.code} className="legend-item">
+                    <div className="legend-box" style={{background:`${t.color}33`,border:`1px solid ${t.color}`}}/>
+                    {t.code} — {t.label}
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Day assignment panel */}
+          <div className="assign-wrap">
+            <div className="panel" style={{flex:1}}>
+              <div className="panel-header" style={{flexDirection:'column',alignItems:'flex-start',gap:6}}>
+                <div className="panel-title">Tournées du jour</div>
+                <div style={{fontSize:13,fontWeight:600,textTransform:'capitalize'}}>{selectedDayLabel}</div>
+                <div style={{display:'flex',gap:6,flexWrap:'wrap',alignItems:'center',width:'100%'}}>
+                  <span style={{fontSize:11,color:'var(--text2)'}}>
+                    <span style={{color:'#22c55e',fontWeight:700}}>{dayPresents.length}</span> présents ·{' '}
+                    <span style={{color:'#ef4444',fontWeight:700}}>{dayAbsents.length}</span> absents
+                  </span>
+                  <button className="btn btn-neon" style={{marginLeft:'auto',fontSize:11,padding:'4px 10px'}}
+                    onClick={handleAutoAssign}>⚡ Auto-assign</button>
+                </div>
+                <div style={{display:'flex',gap:4,flexWrap:'wrap',width:'100%'}}>
+                  {agents.map(a=>{
+                    const isAbs=!!absMap[`${a.id}__${selectedDay}`];
+                    return(
+                      <span key={a.id}
+                        className={`agent-chip${isAbs?' absent-chip':''}`}
+                        style={{borderColor:isAbs?'transparent':`${a.color}55`,
+                          background:isAbs?'rgba(255,255,255,0.03)':`${a.color}18`}}>
+                        {a.name.split(' ').slice(-1)[0]}
+                      </span>
+                    );
+                  })}
+                </div>
+              </div>
+              <div className="panel-body">
+                <div className="tournee-list" style={{padding:8}}>
+                  {tournees.map(t=>{
+                    const assignedId=dayAssign[t.id];
+                    const assignedAgent=agents.find(a=>a.id===assignedId);
+                    return(
+                      <div key={t.id} className="tournee-row">
+                        <div className="tournee-num"
+                          style={{background:`${t.color}`,color:'var(--text)',border:'1px solid rgba(255,255,255,0.1)'}}>
+                          {String(t.id).padStart(2,'0')}
+                        </div>
+                        <div className="tournee-name" style={{fontSize:11}}>{t.name}</div>
+                        <select className="assign-select"
+                          value={assignedId||''}
+                          onChange={e=>setAssignment(selectedDay,t.id,e.target.value?parseInt(e.target.value):null)}
+                          style={{borderColor:assignedAgent?`${assignedAgent.color}55`:'var(--glass-border)',
+                            color:assignedAgent?assignedAgent.color:'var(--text2)'}}>
+                          <option value="">— Non assigné</option>
+                          {dayPresents.map(a=>(
+                            <option key={a.id} value={a.id}>{a.name}</option>
+                          ))}
+                        </select>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+              <div style={{padding:'10px 12px',borderTop:'1px solid var(--panel-border)',flexShrink:0}}>
+                {coveredTournees===tournees.length
+                  ?<div className="cover-ok">✓ Toutes les tournées sont couvertes</div>
+                  :<div className="nouncover">⚠ {tournees.length-coveredTournees} tournées non assignées</div>
+                }
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ── Agents Tab ── */}
+      {tab==='agents'&&(
+        <div className="main" style={{overflow:'auto',display:'block'}}>
+          <div style={{padding:'16px',display:'flex',alignItems:'center',gap:10,borderBottom:'1px solid var(--panel-border)'}}>
+            <span style={{fontSize:13,color:'var(--text2)'}}>{agents.length} agents · Cliquez sur le nom pour le modifier</span>
+            <button className="btn btn-yellow" style={{marginLeft:'auto'}} onClick={addAgent}>+ Ajouter un agent</button>
+          </div>
+          <div className="agents-grid">
+            {agents.map(agent=>(
+              <div key={agent.id} className="agent-card">
+                <div className="agent-card-header">
+                  <div className="agent-avatar" style={{background:agent.color}}>
+                    {agent.name.split(' ').map(w=>w[0]).slice(0,2).join('')}
+                  </div>
+                  <div style={{flex:1,minWidth:0}}>
+                    <input className="agent-name-input" value={agent.name}
+                      onChange={e=>updateAgentName(agent.id,e.target.value)}/>
+                    <div className="agent-role">Agent de distribution</div>
+                  </div>
+                  <button className="btn btn-danger" style={{padding:'4px 8px',fontSize:11}}
+                    onClick={()=>removeAgent(agent.id)}>✕</button>
+                </div>
+                <div className="divider"/>
+                <div className="pref-section">
+                  <div className="pref-label">
+                    Tournées préférentielles
+                    <div className={`toggle${agent.prefEnabled?' on':''}`}
+                      onClick={()=>updateAgentPref(agent.id,!agent.prefEnabled)}/>
+                    {agent.prefEnabled&&<span style={{fontSize:10,color:'var(--neon)'}}>ACTIF</span>}
+                  </div>
+                  {agent.prefEnabled&&(
+                    <div className="pref-pills">
+                      {tournees.map(t=>(
+                        <div key={t.id}
+                          className={`pref-pill${agent.preferred.includes(t.id)?' selected':''}`}
+                          onClick={()=>toggleAgentTournee(agent.id,t.id)}>
+                          T{String(t.id).padStart(2,'0')}
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                  {!agent.prefEnabled&&<div style={{fontSize:11,color:'var(--text3)'}}>Peut effectuer toutes les tournées</div>}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* ── Tournées Tab ── */}
+      {tab==='tournees'&&(
+        <div className="main" style={{overflow:'auto',display:'block'}}>
+          <div style={{padding:'16px',display:'flex',alignItems:'center',gap:10,borderBottom:'1px solid var(--panel-border)'}}>
+            <span style={{fontSize:13,color:'var(--text2)'}}>{tournees.length} tournées configurées</span>
+            <button className="btn btn-yellow" style={{marginLeft:'auto'}} onClick={addTournee}>+ Ajouter une tournée</button>
+          </div>
+          <div className="tournees-grid">
+            {tournees.map(t=>(
+              <div key={t.id} className="tournee-card">
+                <div className="t-num" style={{background:t.color,border:'1px solid rgba(255,255,255,0.1)'}}>
+                  {String(t.id).padStart(2,'0')}
+                </div>
+                <input className="t-name-input" value={t.name}
+                  onChange={e=>updateTourneeName(t.id,e.target.value)}/>
+                <button style={{background:'none',border:'none',color:'var(--text3)',cursor:'pointer',fontSize:16,padding:'0 4px'}}
+                  onClick={()=>removeTournee(t.id)} title="Supprimer">×</button>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* ── Stats bar ── */}
+      <div className="stats-bar">
+        <div className="stat-item">
+          <div className="stat-dot" style={{background:'#22c55e'}}/>
+          <span className="stat-val">{dayPresents.length}</span>
+          <span className="stat-lbl">présents</span>
+        </div>
+        <div className="stat-item">
+          <div className="stat-dot" style={{background:'#ef4444'}}/>
+          <span className="stat-val">{dayAbsents.length}</span>
+          <span className="stat-lbl">absents</span>
+        </div>
+        <div className="stat-item">
+          <div className="stat-dot" style={{background:'var(--neon)'}}/>
+          <span className="stat-val">{coveredTournees}/{tournees.length}</span>
+          <span className="stat-lbl">tournées couvertes</span>
+        </div>
+        <div className="stat-item">
+          <div className="stat-dot" style={{background:'var(--yellow)'}}/>
+          <span className="stat-val">{agents.filter(a=>a.prefEnabled).length}</span>
+          <span className="stat-lbl">avec préférences</span>
+        </div>
+        <div style={{marginLeft:'auto',fontSize:11,color:'var(--text3)',fontFamily:"'Space Mono',monospace"}}>
+          {selectedDayLabel}
+        </div>
+      </div>
+
+      {/* ── Absence Modal ── */}
+      {absModal&&(
+        <AbsenceModal
+          agent={absModal.agent}
+          date={absModal.date}
+          existing={absModal.existing}
+          onSave={saveAbsence}
+          onDelete={deleteAbsence}
+          onClose={()=>setAbsModal(null)}
+        />
+      )}
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+</script>
+</body>
+</html>

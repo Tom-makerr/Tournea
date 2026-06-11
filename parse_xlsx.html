@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html><body>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script>
+const url = 'https://ed40ed9d-e78e-41c1-a2f3-6bed8496d431.claudeusercontent.com/v1/design/projects/ed40ed9d-e78e-41c1-a2f3-6bed8496d431/serve/uploads/Planning%20Logissimo%20-%20Ann%C3%A9e%202026%20version%20SC%20(1).xlsx?t=07e03249c2c8aac8d35fe03c1c015d580b37d95195daa9d1dfd8489843b351ef.1b7b993c-1d35-4c4c-8964-6f6d7e4461b6.4032afe7-48b4-441f-b60a-b0ec1dfcfcfd.1776773067';
+// also log raw text to see what server returns
+fetch(url).then(r=>{console.log('status:',r.status,'type:',r.headers.get('content-type')); return r.text();}).then(t=>console.log('RAW (first 200):', t.slice(0,200))).catch(e=>console.error('raw err:',e));
+fetch(url).then(r=>r.arrayBuffer()).then(ab=>{
+  const wb = XLSX.read(ab,{type:'array'});
+  window.__wb = wb;
+  window.__parsed = {};
+  wb.SheetNames.forEach(name=>{
+    const ws = wb.Sheets[name];
+    window.__parsed[name] = XLSX.utils.sheet_to_json(ws,{header:1,defval:''});
+  });
+  document.body.innerHTML = '<pre id="out">DONE: '+wb.SheetNames.join(', ')+'</pre>';
+  console.log('SHEETS:', JSON.stringify(wb.SheetNames));
+  wb.SheetNames.forEach(n=>{
+    const rows = window.__parsed[n];
+    rows.slice(0,25).forEach((r,i)=>console.log(n+'|'+i+'|'+JSON.stringify(r.slice(0,20))));
+  });
+}).catch(e=>{document.body.innerHTML='ERROR: '+e.message; console.error(e);});
+</script>
+</body></html>
