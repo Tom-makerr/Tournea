@@ -1,0 +1,2714 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="light">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>La Poste — RH</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Bebas+Neue&display=swap" rel="stylesheet"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;}
+
+/* ── Light theme (default) ── */
+:root{
+  --bg:#FAFAFA;
+  --surface:#FFFFFF;
+  --surface-2:#F5F5F7;
+  --surface-3:#EBEBEF;
+  --border:#E5E5EA;
+  --border-strong:#D2D2D7;
+  --text:#1d1d1f;
+  --text-2:#6e6e73;
+  --text-3:#a1a1a6;
+  --accent:#007AFF;
+  --accent-soft:#E6F0FF;
+  --accent-hover:#0056b3;
+  --success:#34C759;
+  --warning:#FF9500;
+  --danger:#FF3B30;
+  --shadow-sm:0 1px 2px rgba(0,0,0,0.04);
+  --shadow:0 1px 3px rgba(0,0,0,0.06),0 1px 2px rgba(0,0,0,0.04);
+  --shadow-md:0 4px 12px rgba(0,0,0,0.08),0 2px 4px rgba(0,0,0,0.04);
+  --shadow-lg:0 20px 50px rgba(0,0,0,0.15),0 8px 16px rgba(0,0,0,0.08);
+  --r-sm:8px;
+  --r:12px;
+  --r-lg:16px;
+  --r-xl:20px;
+  --t-fast:.15s cubic-bezier(.4,0,.2,1);
+  --t:.2s cubic-bezier(.4,0,.2,1);
+  --t-slow:.3s cubic-bezier(.4,0,.2,1);
+}
+
+/* ── Tweak: Corner personality ── */
+html[data-tweak-corners="sharp"]{--r-sm:4px;--r:6px;--r-lg:8px;--r-xl:10px;}
+html[data-tweak-corners="pill"]{--r-sm:14px;--r:20px;--r-lg:26px;--r-xl:32px;}
+html[data-tweak-corners="sharp"] .btn,html[data-tweak-corners="sharp"] .btn-sm{border-radius:4px;}
+html[data-tweak-corners="pill"] .btn{border-radius:999px;}
+html[data-tweak-corners="pill"] .btn-sm{border-radius:999px;}
+html[data-tweak-corners="pill"] .toggle{border-radius:999px;}
+html[data-tweak-corners="pill"] .input{border-radius:999px;}
+html[data-tweak-corners="pill"] textarea.input{border-radius:18px;}
+html[data-tweak-corners="pill"] .card{border-radius:24px;}
+html[data-tweak-corners="pill"] .chip{border-radius:999px;}
+html[data-tweak-corners="sharp"] .chip{border-radius:3px;}
+html[data-tweak-corners="sharp"] .card{border-radius:6px;}
+
+/* ── Tweak: Card vibe ── */
+html[data-tweak-card="elevated"] .card{box-shadow:var(--shadow-md);border-color:transparent;}
+html[data-tweak-card="elevated"] .card-hover:hover{box-shadow:var(--shadow-lg);transform:translateY(-2px);}
+html[data-tweak-card="outlined"] .card{box-shadow:none;border:1.5px solid var(--border-strong);}
+html[data-tweak-card="outlined"] .card-hover:hover{border-color:var(--accent);box-shadow:none;}
+html[data-tweak-card="outlined"] .sidebar{border-right-width:1.5px;}
+
+/* ── Tweak: Calendar density ── */
+html[data-tweak-cal="cozy"] .cal-cell{min-height:42px;}
+html[data-tweak-cal="cozy"] .cal-agent-cell{padding:12px 14px;}
+html[data-tweak-cal="cozy"] .cal-head,html[data-tweak-cal="cozy"] .cal-day-head{padding:14px 6px;}
+html[data-tweak-cal="dense"] .cal-cell{min-height:24px;}
+html[data-tweak-cal="dense"] .cal-agent-cell{padding:4px 12px;font-size:12px;}
+html[data-tweak-cal="dense"] .cal-head,html[data-tweak-cal="dense"] .cal-day-head{padding:6px 4px;}
+html[data-tweak-cal="dense"] .cal-day-head .day-name{font-size:9px;}
+html[data-tweak-cal="dense"] .cal-day-head .day-num{font-size:10px;}
+html[data-tweak-cal="dense"] .abs-tag{font-size:8px;}
+
+/* ── Dark theme ── */
+html[data-theme="dark"]{
+  --bg:#000000;
+  --surface:#1c1c1e;
+  --surface-2:#2c2c2e;
+  --surface-3:#3a3a3c;
+  --border:#38383a;
+  --border-strong:#48484a;
+  --text:#ffffff;
+  --text-2:#98989f;
+  --text-3:#6c6c70;
+  --accent:#0A84FF;
+  --accent-soft:rgba(10,132,255,0.15);
+  --accent-hover:#3395ff;
+  --success:#30D158;
+  --warning:#FF9F0A;
+  --danger:#FF453A;
+  --shadow-sm:0 1px 2px rgba(0,0,0,0.3);
+  --shadow:0 2px 8px rgba(0,0,0,0.4);
+  --shadow-md:0 4px 16px rgba(0,0,0,0.5);
+  --shadow-lg:0 20px 50px rgba(0,0,0,0.6);
+}
+
+html,body{height:100%;overflow:hidden;font-family:'Inter','SF Pro Display',-apple-system,BlinkMacSystemFont,sans-serif;background:var(--bg);color:var(--text);transition:background var(--t),color var(--t);font-size:14px;letter-spacing:-0.005em;}
+#root{height:100vh;display:flex;flex-direction:column;}
+
+/* ── Typography ── */
+.h1{font-size:28px;font-weight:700;letter-spacing:-0.02em;line-height:1.2;}
+.h2{font-size:22px;font-weight:700;letter-spacing:-0.015em;}
+.h3{font-size:17px;font-weight:600;letter-spacing:-0.01em;}
+.h4{font-size:15px;font-weight:600;}
+.body{font-size:14px;font-weight:400;line-height:1.5;}
+.caption{font-size:13px;color:var(--text-2);}
+.label-sm{font-size:11px;color:var(--text-2);font-weight:600;text-transform:uppercase;letter-spacing:.5px;}
+
+/* ── Sidebar (default plain) ── */
+.sidebar{
+  width:248px;flex-shrink:0;
+  background:var(--surface);
+  border-right:1px solid var(--border);
+  display:flex;flex-direction:column;
+  overflow:hidden;
+  position:relative;
+  transition:background var(--t),border-color var(--t);
+}
+.sidebar > *{position:relative;z-index:1;}
+
+/* ── Liquid Glass mode (toggle in Settings) ── */
+html[data-liquid-glass="on"] .sidebar{
+  background:
+    linear-gradient(165deg, color-mix(in srgb, var(--accent) 18%, transparent) 0%, color-mix(in srgb, var(--accent) 6%, transparent) 45%, color-mix(in srgb, var(--accent) 2%, transparent) 100%),
+    var(--surface);
+  backdrop-filter:blur(40px) saturate(180%);
+  -webkit-backdrop-filter:blur(40px) saturate(180%);
+  border-right:1px solid color-mix(in srgb, var(--accent) 12%, var(--border));
+  box-shadow:inset 0 1px 0 color-mix(in srgb, var(--accent) 25%, transparent), inset -1px 0 0 color-mix(in srgb, var(--accent) 8%, transparent);
+}
+html[data-liquid-glass="on"] .sidebar::before{
+  content:'';position:absolute;inset:0;pointer-events:none;
+  background:
+    radial-gradient(ellipse 60% 40% at 20% 0%, color-mix(in srgb, var(--accent) 22%, transparent) 0%, transparent 60%),
+    radial-gradient(ellipse 70% 50% at 80% 100%, color-mix(in srgb, var(--accent) 12%, transparent) 0%, transparent 60%);
+  opacity:0.7;z-index:0;
+}
+html[data-liquid-glass="on"][data-theme="dark"] .sidebar{
+  background:
+    linear-gradient(165deg, color-mix(in srgb, var(--accent) 22%, transparent) 0%, color-mix(in srgb, var(--accent) 8%, transparent) 50%, transparent 100%),
+    var(--surface);
+}
+html[data-liquid-glass="on"] .sb-item:hover{background:color-mix(in srgb, var(--accent) 8%, transparent);}
+html[data-liquid-glass="on"] .sb-item.active{background:color-mix(in srgb, var(--accent) 14%, transparent);}
+
+/* Topbar tinted */
+html[data-liquid-glass="on"] .topbar{
+  background:linear-gradient(180deg, color-mix(in srgb, var(--accent) 8%, var(--surface)) 0%, var(--surface) 100%);
+  border-bottom:1px solid color-mix(in srgb, var(--accent) 10%, var(--border));
+  backdrop-filter:blur(20px) saturate(160%);
+  -webkit-backdrop-filter:blur(20px) saturate(160%);
+}
+
+/* Main content + body tint */
+html[data-liquid-glass="on"] body{
+  background:var(--bg);
+}
+html[data-liquid-glass="on"] body::before{
+  content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:
+    radial-gradient(ellipse 50% 40% at 100% 0%, color-mix(in srgb, var(--accent) 14%, transparent) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 50% at 0% 100%, color-mix(in srgb, var(--accent) 10%, transparent) 0%, transparent 60%);
+  opacity:0.8;
+}
+html[data-liquid-glass="on"] #root{position:relative;z-index:1;}
+
+/* Cards: subtle accent edge + frosted */
+html[data-liquid-glass="on"] .card{
+  background:color-mix(in srgb, var(--accent) 2%, var(--surface));
+  border:1px solid color-mix(in srgb, var(--accent) 8%, var(--border));
+  backdrop-filter:blur(20px) saturate(150%);
+  -webkit-backdrop-filter:blur(20px) saturate(150%);
+}
+
+/* Buttons primary glow */
+html[data-liquid-glass="on"] .btn-primary{
+  background:linear-gradient(180deg, color-mix(in srgb, white 18%, var(--accent)) 0%, var(--accent) 100%);
+  box-shadow:0 1px 0 rgba(255,255,255,0.25) inset, 0 4px 12px color-mix(in srgb, var(--accent) 40%, transparent);
+}
+.sb-brand{padding:22px 20px 18px;display:flex;align-items:center;gap:11px;}
+.sb-logo{width:36px;height:36px;border-radius:10px;background:var(--text);color:var(--surface);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;flex-shrink:0;letter-spacing:-0.5px;}
+.sb-brand-title{font-size:15px;font-weight:600;line-height:1.2;letter-spacing:-0.01em;}
+.sb-brand-sub{font-size:12px;color:var(--text-2);margin-top:2px;}
+
+.sb-section{padding:6px 12px;}
+.sb-section-label{font-size:11px;font-weight:600;color:var(--text-2);text-transform:uppercase;letter-spacing:.6px;padding:14px 8px 6px;}
+.sb-item{
+  display:flex;align-items:center;gap:10px;
+  padding:8px 10px;border-radius:8px;
+  cursor:pointer;font-size:14px;font-weight:500;color:var(--text);
+  transition:background var(--t-fast);
+}
+.sb-item:hover{background:var(--surface-2);}
+.sb-item.active{background:var(--surface-2);}
+.sb-item.active .sb-icon{color:var(--accent);}
+.sb-icon{width:18px;height:18px;flex-shrink:0;display:flex;align-items:center;justify-content:center;color:var(--text-2);}
+.sb-item-team{padding:7px 10px;font-size:13px;}
+.sb-item-team .dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+.sb-badge{margin-left:auto;background:var(--danger);color:#fff;border-radius:8px;padding:1px 6px;font-size:10px;font-weight:700;line-height:1.4;}
+.sb-count{margin-left:auto;font-size:11px;color:var(--text-3);font-variant-numeric:tabular-nums;}
+.sb-add{font-size:13px;color:var(--text-2);font-weight:500;}
+.sb-add:hover{color:var(--accent);}
+
+.sb-user{margin-top:auto;padding:12px;border-top:1px solid var(--border);}
+.sb-user-inner{display:flex;align-items:center;gap:10px;padding:8px;border-radius:10px;}
+.sb-avatar{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:12px;color:#fff;flex-shrink:0;}
+
+/* ── Topbar ── */
+.topbar{
+  height:60px;flex-shrink:0;
+  background:var(--surface);
+  border-bottom:1px solid var(--border);
+  display:flex;align-items:center;padding:0 28px;gap:14px;
+  transition:background var(--t),border-color var(--t);
+}
+.topbar-title{font-size:20px;font-weight:700;letter-spacing:-0.015em;}
+.topbar-sub{font-size:13px;color:var(--text-2);}
+
+/* ── Buttons ── */
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:6px;
+  height:34px;padding:0 14px;border-radius:8px;
+  border:none;cursor:pointer;
+  font-family:inherit;font-size:13px;font-weight:600;
+  transition:all var(--t-fast);
+  white-space:nowrap;
+}
+.btn:active{transform:scale(0.97);}
+.btn-primary{background:var(--accent);color:#fff;}
+.btn-primary:hover{background:var(--accent-hover);}
+.btn-secondary{background:var(--surface-2);color:var(--text);border:1px solid var(--border);}
+.btn-secondary:hover{background:var(--surface-3);}
+.btn-tinted{background:var(--accent-soft);color:var(--accent);}
+.btn-tinted:hover{background:color-mix(in srgb,var(--accent) 15%,var(--surface));}
+.btn-ghost{background:transparent;color:var(--text);}
+.btn-ghost:hover{background:var(--surface-2);}
+.btn-danger{background:var(--danger);color:#fff;}
+.btn-danger:hover{filter:brightness(0.92);}
+.btn-danger-tinted{background:rgba(255,59,48,0.1);color:var(--danger);}
+.btn-sm{height:28px;padding:0 10px;font-size:12px;border-radius:7px;}
+.btn-icon{width:34px;padding:0;}
+.btn-lg{height:42px;padding:0 22px;font-size:14px;border-radius:10px;}
+.btn:disabled{opacity:.4;cursor:not-allowed;}
+
+/* ── Form fields ── */
+.field-label{display:block;font-size:12px;font-weight:600;color:var(--text);margin-bottom:6px;}
+.input{
+  width:100%;height:38px;padding:0 12px;
+  background:var(--surface);
+  border:1px solid var(--border-strong);
+  border-radius:9px;
+  font-family:inherit;font-size:14px;color:var(--text);
+  transition:border-color var(--t-fast),box-shadow var(--t-fast);
+  outline:none;
+}
+.input:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft);}
+textarea.input{padding:10px 12px;height:auto;min-height:80px;resize:vertical;line-height:1.5;}
+select.input{cursor:pointer;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2'><polyline points='6 9 12 15 18 9'/></svg>");background-repeat:no-repeat;background-position:right 10px center;background-size:14px;padding-right:30px;-webkit-appearance:none;appearance:none;}
+input[type=date].input{color-scheme:light;}
+html[data-theme="dark"] input[type=date].input{color-scheme:dark;}
+
+/* ── Cards ── */
+.card{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:var(--r-lg);
+  transition:box-shadow var(--t),border-color var(--t);
+}
+.card-hover:hover{box-shadow:var(--shadow-md);}
+.card-padded{padding:20px;}
+.card-header{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;}
+.card-title{font-size:15px;font-weight:600;letter-spacing:-0.01em;}
+
+/* ── Segmented control (iOS-style) ── */
+.segmented{
+  display:inline-flex;background:var(--surface-2);border-radius:9px;padding:2px;gap:0;
+}
+.segmented button{
+  border:none;background:transparent;
+  padding:6px 14px;border-radius:7px;
+  font-family:inherit;font-size:12px;font-weight:600;color:var(--text);
+  cursor:pointer;transition:all var(--t-fast);
+}
+.segmented button.active{background:var(--surface);box-shadow:var(--shadow-sm);color:var(--text);}
+html[data-theme="dark"] .segmented button.active{background:var(--surface-3);}
+
+/* ── Toggle (iOS-style) ── */
+.toggle{
+  width:46px;height:28px;border-radius:14px;
+  background:var(--surface-3);
+  position:relative;cursor:pointer;
+  transition:background var(--t);flex-shrink:0;
+}
+.toggle.on{background:var(--success);}
+.toggle::after{
+  content:'';position:absolute;top:2px;left:2px;
+  width:24px;height:24px;border-radius:50%;background:#fff;
+  box-shadow:var(--shadow);transition:transform var(--t);
+}
+.toggle.on::after{transform:translateX(18px);}
+
+/* ── Status chips ── */
+.chip{
+  display:inline-flex;align-items:center;gap:5px;
+  padding:3px 9px;border-radius:6px;
+  font-size:11px;font-weight:600;
+}
+.chip-success{background:rgba(52,199,89,0.12);color:var(--success);}
+.chip-warning{background:rgba(255,149,0,0.12);color:var(--warning);}
+.chip-danger{background:rgba(255,59,48,0.12);color:var(--danger);}
+.chip-info{background:var(--accent-soft);color:var(--accent);}
+.chip-neutral{background:var(--surface-2);color:var(--text-2);}
+
+/* ── Layout ── */
+.shell{flex:1;display:flex;overflow:hidden;}
+.main{flex:1;overflow:hidden;display:flex;flex-direction:column;}
+.scroll-content{flex:1;overflow-y:auto;}
+
+/* ── Calendar ── */
+.cal{
+  display:grid;
+  min-width:max-content;
+}
+.cal-head,.cal-day-head{
+  background:var(--surface);position:sticky;top:0;z-index:3;
+  border-bottom:1px solid var(--border);
+  font-size:11px;font-weight:600;color:var(--text-2);
+  text-transform:uppercase;letter-spacing:.4px;
+  padding:10px 6px;text-align:center;
+}
+.cal-head{text-align:left;padding:10px 14px;}
+.cal-day-head .day-name{font-size:10px;}
+.cal-day-head .day-num{font-size:11px;color:var(--text);margin-top:2px;font-variant-numeric:tabular-nums;}
+.cal-day-head.today .day-num{background:var(--accent);color:#fff;border-radius:50%;display:inline-block;width:20px;height:20px;line-height:20px;}
+.cal-day-head.we{color:var(--text-3);}
+.cal-day-head.hol .day-num{color:var(--warning);}
+.cal-agent-cell{
+  position:sticky;left:0;z-index:2;
+  background:var(--surface);
+  padding:8px 14px;
+  border-bottom:1px solid var(--border);
+  display:flex;align-items:center;gap:8px;
+  white-space:nowrap;font-size:13px;font-weight:500;
+}
+.cal-agent-cell .dot{width:6px;height:6px;border-radius:50%;flex-shrink:0;}
+.cal-cell{
+  border-bottom:1px solid var(--border);
+  border-left:1px solid var(--border);
+  min-height:34px;
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;transition:background var(--t-fast);
+  position:relative;
+}
+.cal-cell:hover{background:var(--surface-2);}
+.cal-cell.sel{background:var(--accent-soft);box-shadow:inset 0 0 0 2px var(--accent);}
+.cal-cell.we{background:var(--surface-2);}
+.cal-cell.hol{background:rgba(255,149,0,0.06);}
+.abs-tag{
+  width:calc(100% - 4px);height:calc(100% - 4px);
+  border-radius:5px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:9px;font-weight:700;letter-spacing:.2px;
+}
+.hol-dot{width:4px;height:4px;border-radius:50%;background:var(--warning);}
+
+/* ── Modal ── */
+.overlay{
+  position:fixed;inset:0;z-index:100;
+  background:rgba(0,0,0,0.35);backdrop-filter:blur(8px);
+  display:flex;align-items:center;justify-content:center;
+  animation:fadeIn .2s ease;
+  padding:20px;
+}
+@keyframes fadeIn{from{opacity:0;}to{opacity:1;}}
+.modal{
+  background:var(--surface);
+  border-radius:18px;
+  width:100%;max-width:460px;max-height:90vh;
+  overflow-y:auto;
+  box-shadow:var(--shadow-lg);
+  animation:slideUp .25s cubic-bezier(.4,0,.2,1);
+}
+@keyframes slideUp{from{opacity:0;transform:translateY(20px) scale(0.98);}to{opacity:1;transform:translateY(0) scale(1);}}
+.modal-header{padding:22px 24px 0;}
+.modal-title{font-size:18px;font-weight:700;letter-spacing:-0.015em;}
+.modal-sub{font-size:13px;color:var(--text-2);margin-top:4px;}
+.modal-body{padding:18px 24px 0;}
+.modal-footer{
+  padding:18px 24px 22px;
+  display:flex;gap:8px;justify-content:flex-end;
+}
+
+/* ── Tab bar mobile ── */
+.tabbar{
+  height:60px;background:var(--surface);
+  border-top:1px solid var(--border);
+  display:none;align-items:center;justify-content:space-around;
+}
+.tabbar-item{
+  display:flex;flex-direction:column;align-items:center;gap:2px;
+  padding:8px 12px;font-size:10px;color:var(--text-2);cursor:pointer;
+}
+.tabbar-item.active{color:var(--accent);}
+
+/* ── Empty states ── */
+.empty{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:60px 24px;text-align:center;color:var(--text-2);
+}
+.empty-icon{font-size:36px;margin-bottom:14px;opacity:.6;}
+.empty-title{font-size:17px;font-weight:600;color:var(--text);margin-bottom:6px;}
+.empty-text{font-size:13px;max-width:340px;line-height:1.5;}
+
+/* ── Scrollbars ── */
+::-webkit-scrollbar{width:8px;height:8px;}
+::-webkit-scrollbar-track{background:transparent;}
+::-webkit-scrollbar-thumb{background:var(--border-strong);border-radius:4px;}
+::-webkit-scrollbar-thumb:hover{background:var(--text-3);}
+
+/* Avatar */
+.avatar{
+  border-radius:50%;display:flex;align-items:center;justify-content:center;
+  font-weight:600;color:#fff;flex-shrink:0;letter-spacing:-0.5px;
+}
+
+/* Color swatches */
+.swatch{width:24px;height:24px;border-radius:50%;cursor:pointer;border:2px solid transparent;transition:transform var(--t-fast);}
+.swatch:hover{transform:scale(1.1);}
+.swatch.selected{border-color:var(--text);transform:scale(1.1);}
+
+/* ── List rows ── */
+.list-row{
+  display:flex;align-items:center;gap:12px;
+  padding:14px 20px;
+  border-bottom:1px solid var(--border);
+  transition:background var(--t-fast);
+}
+.list-row:last-child{border-bottom:none;}
+.list-row.clickable{cursor:pointer;}
+.list-row.clickable:hover{background:var(--surface-2);}
+
+/* ── Progress bar ── */
+.progress{
+  height:6px;background:var(--surface-3);border-radius:3px;overflow:hidden;
+  position:relative;
+}
+.progress-fill{
+  height:100%;border-radius:3px;
+  transition:width .4s cubic-bezier(.4,0,.2,1);
+}
+.progress-target{
+  position:absolute;top:-2px;bottom:-2px;
+  width:2px;background:var(--text);border-radius:1px;
+}
+
+/* ── Mobile responsive ── */
+@media (max-width: 768px){
+  .sidebar{display:none;}
+  .tabbar{display:flex;}
+  .topbar{padding:0 16px;height:54px;}
+  .topbar-title{font-size:17px;}
+  .card-padded{padding:16px;}
+}
+
+/* ── Drop zone ── */
+.dropzone{
+  border:2px dashed var(--border-strong);
+  border-radius:12px;padding:32px;
+  text-align:center;cursor:pointer;
+  transition:all var(--t);
+  background:var(--surface-2);
+}
+.dropzone:hover,.dropzone.over{border-color:var(--accent);background:var(--accent-soft);}
+
+/* ── Print ── */
+@media print{
+  .sidebar,.topbar,.tabbar,.day-panel,.btn{display:none!important;}
+  .main{overflow:visible!important;}
+  body{background:#fff!important;color:#000!important;}
+}
+
+/* Hide text-overflow on small */
+.truncate{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+</style>
+</head>
+<body>
+<template id="__bundler_thumbnail" data-bg-color="#FAFAFA">
+  <svg viewBox="0 0 1200 800" xmlns="http://www.w3.org/2000/svg">
+    <!-- Thumbnail for preview -->
+  </svg>
+</template>
+<div id="root"></div>
+
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+<script type="text/babel" src="tweaks-panel.jsx"></script>
+<script type="text/babel" src="app/cloud.jsx"></script>
+
+<script type="text/babel" data-presets="react">
+
+
+// ── One-time migration from lp3_* to lp4_* keys ──
+(function migrate() {
+  if (localStorage.getItem('lp4_migrated_from_v3')) return;
+  const map = { 'lp3_teams': 'lp4_teams', 'lp3_abs': 'lp4_abs', 'lp3_assign': 'lp4_assign', 'lp3_leaves': 'lp4_leaves', 'lp3_curTeam': 'lp4_curTeam' };
+  let migrated = false;
+  Object.entries(map).forEach(([oldK, newK]) => {
+    const v = localStorage.getItem(oldK);
+    if (v && !localStorage.getItem(newK)) {localStorage.setItem(newK, v);migrated = true;}
+  });
+  // Migrate agent userId → id for v4 (v3 had separate userId)
+  try {
+    const teams = JSON.parse(localStorage.getItem('lp4_teams'));
+    if (teams && Array.isArray(teams)) {
+      const fixed = teams.map((t) => ({
+        ...t,
+        agents: (t.agents || []).map((a) => ({ ...a, id: a.userId || a.id }))
+      }));
+      localStorage.setItem('lp4_teams', JSON.stringify(fixed));
+    }
+  } catch {}
+  // Migrate absences agent IDs: in v3 some used userId
+  try {
+    const abs = JSON.parse(localStorage.getItem('lp4_abs'));
+    if (abs) {
+
+
+
+
+      // Leave as-is; the agents now have id=userId so they match
+    }} catch {}if (migrated) console.log('[LP] Migrated v3 data to v4 keys');localStorage.setItem('lp4_migrated_from_v3', '1');})();
+
+const { useState, useEffect, useMemo, useRef, useCallback } = React;
+
+// ═══ CONSTANTS ═══════════════════════════════════════════════════════════════
+const ABSENCE_TYPES = [
+{ code: 'CP', label: 'Congés Payés', color: '#34C759' },
+{ code: 'MAL', label: 'Maladie', color: '#FF3B30' },
+{ code: 'FORM', label: 'Formation', color: '#007AFF' },
+{ code: 'RC', label: 'Repos Comp.', color: '#FF9500' },
+{ code: 'AT', label: 'Acc. Travail', color: '#AF52DE' },
+{ code: 'CSE', label: 'CSE/RPX', color: '#5AC8FA' },
+{ code: 'CARC', label: 'CA/RC', color: '#FF2D55' },
+{ code: 'ATM', label: 'ATM/ATA', color: '#8E8E93' },
+{ code: 'ASA', label: 'ASA', color: '#FFCC00' },
+{ code: 'AUTRE', label: 'Autre', color: '#A2845E' }];
+
+const LEAVE_TYPES = [
+{ code: 'CP', label: 'Congés Payés', color: '#34C759' },
+{ code: 'RTT', label: 'RTT', color: '#007AFF' },
+{ code: 'CSS', label: 'Sans solde', color: '#8E8E93' },
+{ code: 'MAT', label: 'Maternité', color: '#FF2D55' },
+{ code: 'PAT', label: 'Paternité', color: '#AF52DE' },
+{ code: 'MAL', label: 'Maladie', color: '#FF3B30' },
+{ code: 'FP', label: 'Famille perso', color: '#FF9500' }];
+
+const ABS_MAP = Object.fromEntries(ABSENCE_TYPES.map((a) => [a.code, a]));
+const LEAVE_MAP = Object.fromEntries(LEAVE_TYPES.map((a) => [a.code, a]));
+const FR_MONTHS = ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'];
+const FR_DOW = ['L', 'M', 'M', 'J', 'V', 'S', 'D'];
+const TEAM_COLORS = ['#007AFF', '#34C759', '#FF9500', '#FF3B30', '#AF52DE', '#5AC8FA', '#FF2D55', '#8E8E93'];
+const AGENT_COLORS = ['#007AFF', '#34C759', '#FF9500', '#FF3B30', '#AF52DE', '#5AC8FA', '#FF2D55', '#FFCC00', '#A2845E', '#5856D6', '#FF6482', '#30D158', '#64D2FF', '#BF5AF2', '#FFD60A'];
+const CAT_COLORS = ['#FF3B30', '#007AFF', '#34C759', '#FF9500', '#AF52DE', '#FF2D55', '#5AC8FA', '#FFCC00'];
+const T_COLORS = ['#E6F0FF', '#E7F8EA', '#FFF1E6', '#FFE6E5', '#F4EAFB', '#E5F6FE', '#FCE7EE', '#FFF8E0'];
+const ACCENT_COLORS = ['#007AFF', '#34C759', '#FF9500', '#FF3B30', '#AF52DE', '#FF2D55', '#5AC8FA', '#FFCC00', '#5856D6', '#FF6482'];
+
+// ═══ UTILS ═══════════════════════════════════════════════════════════════════
+function mkId() {return Math.random().toString(36).slice(2) + Date.now().toString(36);}
+function fmt(d) {return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;}
+function parseD(s) {const [y, m, d] = s.split('-').map(Number);return new Date(y, m - 1, d);}
+function generateCode() {return Math.random().toString(36).slice(2, 8).toUpperCase();}
+function load(k, def) {try {const v = JSON.parse(localStorage.getItem(k));return v !== null ? v : def;} catch {return def;}}
+function save(k, v) {localStorage.setItem(k, JSON.stringify(v));}
+function initials(name) {return (name || '?').split(' ').map((w) => w[0]).slice(0, 2).join('').toUpperCase();}
+function lastName(name) {return (name || '').split(' ').slice(-1)[0];}
+function tNum(t) {
+  if (!t) return '';
+  if (t.code && String(t.code).trim()) return String(t.code).trim();
+  const m = String(t.name || '').match(/\d+/);
+  if (m) return m[0];
+  return String(t.num || '').padStart(2, '0');
+}
+
+function getEaster(y) {
+  const a = y % 19,b = Math.floor(y / 100),c = y % 100,d = Math.floor(b / 4),e = b % 4,f = Math.floor((b + 8) / 25),g = Math.floor((b - f + 1) / 3),h = (19 * a + b - d - g + 15) % 30,i = Math.floor(c / 4),k = c % 4,l = (32 + 2 * e + 2 * i - h - k) % 7,m = Math.floor((a + 11 * h + 22 * l) / 451),month = Math.floor((h + l - 7 * m + 114) / 31),day = (h + l - 7 * m + 114) % 31 + 1;
+  return new Date(y, month - 1, day);
+}
+function getFrHolidays(year) {
+  const e = getEaster(year);
+  const add = (d, n) => {const x = new Date(d);x.setDate(x.getDate() + n);return fmt(x);};
+  return new Set([
+  `${year}-01-01`, add(e, 1), `${year}-05-01`, `${year}-05-08`,
+  add(e, 39), add(e, 50), `${year}-07-14`, `${year}-08-15`,
+  `${year}-11-01`, `${year}-11-11`, `${year}-12-25`]
+  );
+}
+
+function autoAssign(team, absMap, dateStr) {
+  const present = (team.agents || []).filter((a) => !absMap[`${a.id}__${dateStr}`]);
+  if (!present.length) return {};
+  const res = {};let idx = 0;
+  (team.tournees || []).forEach((t) => {
+    const elig = present.filter((a) => {if (a.prefEnabled && a.preferred?.length > 0) return a.preferred.includes(t.id);return !a.managerial;});
+    const pool = elig.length ? elig : present.filter((a) => !a.managerial);
+    res[t.id] = pool[idx % pool.length]?.id;
+    idx++;
+  });
+  return res;
+}
+
+// ═══ ICONS (inline SVG) ═══════════════════════════════════════════════════════
+const Icon = ({ name, size = 18 }) => {
+  const I = ({ d, p }) => <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">{p ? p : <path d={d} />}</svg>;
+  switch (name) {
+    case 'calendar':return <I p={<><rect x="3" y="4" width="18" height="18" rx="2" /><line x1="16" y1="2" x2="16" y2="6" /><line x1="8" y1="2" x2="8" y2="6" /><line x1="3" y1="10" x2="21" y2="10" /></>} />;
+    case 'users':return <I p={<><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" /><circle cx="9" cy="7" r="4" /><path d="M23 21v-2a4 4 0 0 0-3-3.87" /><path d="M16 3.13a4 4 0 0 1 0 7.75" /></>} />;
+    case 'route':return <I p={<><circle cx="6" cy="19" r="3" /><circle cx="18" cy="5" r="3" /><path d="M6.7 16.3 8 14h8a3 3 0 0 0 0-6h-2" /></>} />;
+    case 'leaf':return <I p={<><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19.2 2.96c1 4.34.95 8.66 1 11.04C20.2 19 16 21 11 21" /><path d="M2 21c0-3 1.85-5.36 5.08-6" /></>} />;
+    case 'chart':return <I p={<><line x1="18" y1="20" x2="18" y2="10" /><line x1="12" y1="20" x2="12" y2="4" /><line x1="6" y1="20" x2="6" y2="14" /></>} />;
+    case 'settings':return <I p={<><circle cx="12" cy="12" r="3" /><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" /></>} />;
+    case 'plus':return <I p={<><line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" /></>} />;
+    case 'check':return <I d="M20 6L9 17l-5-5" />;
+    case 'x':return <I p={<><line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" /></>} />;
+    case 'chevron-left':return <I d="M15 18l-6-6 6-6" />;
+    case 'chevron-right':return <I d="M9 18l6-6-6-6" />;
+    case 'download':return <I p={<><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /><polyline points="7 10 12 15 17 10" /><line x1="12" y1="15" x2="12" y2="3" /></>} />;
+    case 'upload':return <I p={<><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /><polyline points="17 8 12 3 7 8" /><line x1="12" y1="3" x2="12" y2="15" /></>} />;
+    case 'printer':return <I p={<><polyline points="6 9 6 2 18 2 18 9" /><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2" /><rect x="6" y="14" width="12" height="8" /></>} />;
+    case 'zap':return <I p={<polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />} />;
+    case 'sun':return <I p={<><circle cx="12" cy="12" r="5" /><line x1="12" y1="1" x2="12" y2="3" /><line x1="12" y1="21" x2="12" y2="23" /><line x1="4.22" y1="4.22" x2="5.64" y2="5.64" /><line x1="18.36" y1="18.36" x2="19.78" y2="19.78" /><line x1="1" y1="12" x2="3" y2="12" /><line x1="21" y1="12" x2="23" y2="12" /><line x1="4.22" y1="19.78" x2="5.64" y2="18.36" /><line x1="18.36" y1="5.64" x2="19.78" y2="4.22" /></>} />;
+    case 'moon':return <I d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />;
+    case 'copy':return <I p={<><rect x="9" y="9" width="13" height="13" rx="2" /><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" /></>} />;
+    case 'trash':return <I p={<><polyline points="3 6 5 6 21 6" /><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" /></>} />;
+    case 'edit':return <I p={<><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" /><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" /></>} />;
+    case 'bell':return <I p={<><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" /><path d="M13.73 21a2 2 0 0 1-3.46 0" /></>} />;
+    case 'home':return <I p={<><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" /><polyline points="9 22 9 12 15 12 15 22" /></>} />;
+    case 'key':return <I p={<><circle cx="8" cy="15" r="4" /><line x1="10.85" y1="12.15" x2="19" y2="4" /><line x1="18" y1="5" x2="20" y2="7" /><line x1="15" y1="8" x2="17" y2="10" /></>} />;
+    case 'menu':return <I p={<><line x1="3" y1="12" x2="21" y2="12" /><line x1="3" y1="6" x2="21" y2="6" /><line x1="3" y1="18" x2="21" y2="18" /></>} />;
+    default:return null;
+  }
+};
+
+// ═══ AVATAR ═════════════════════════════════════════════════════════════════
+const Avatar = ({ name, color, size = 32 }) =>
+<div className="avatar" style={{ width: size, height: size, background: color, fontSize: size * 0.4 }}>
+    {initials(name)}
+  </div>;
+
+
+// ═══ MODALS ══════════════════════════════════════════════════════════════════
+function AbsenceModal({ agent, date, existing, onSave, onDelete, onClose }) {
+  const [type, setType] = useState(existing?.type || 'CP');
+  const [from, setFrom] = useState(existing?.dateFrom || date);
+  const [to, setTo] = useState(existing?.dateTo || date);
+  const save = () => {
+    const a = from <= to ? from : to,b = from <= to ? to : from;
+    const dates = [];let cur = parseD(a);const end = parseD(b);
+    while (cur <= end) {dates.push(fmt(cur));cur.setDate(cur.getDate() + 1);}
+    onSave(agent.id, dates, type, a, b);
+  };
+  return (
+    <div className="overlay" onClick={(e) => e.target === e.currentTarget && onClose()}>
+      <div className="modal">
+        <div className="modal-header">
+          <div className="modal-title">Absence · {agent.name}</div>
+          <div className="modal-sub">Définir une absence sur une ou plusieurs dates</div>
+        </div>
+        <div className="modal-body">
+          <label className="field-label">Du</label>
+          <input type="date" className="input" value={from} onChange={(e) => setFrom(e.target.value)} style={{ marginBottom: 14 }} />
+          <label className="field-label">Au</label>
+          <input type="date" className="input" value={to} onChange={(e) => setTo(e.target.value)} style={{ marginBottom: 18 }} />
+          <label className="field-label">Type d'absence</label>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2,1fr)', gap: 8, marginBottom: 6 }}>
+            {ABSENCE_TYPES.map((t) =>
+            <button key={t.code}
+            onClick={() => setType(t.code)}
+            style={{
+              textAlign: 'left', padding: '10px 12px',
+              border: `1.5px solid ${type === t.code ? t.color : 'var(--border)'}`,
+              background: type === t.code ? `${t.color}15` : 'var(--surface)',
+              color: type === t.code ? t.color : 'var(--text)',
+              borderRadius: '10px', cursor: 'pointer',
+              fontFamily: 'inherit', fontSize: 13, fontWeight: 500,
+              display: 'flex', alignItems: 'center', gap: 8, transition: 'all .15s'
+            }}>
+                <div style={{ width: 8, height: 8, borderRadius: '50%', background: t.color }} />
+                {t.label}
+              </button>
+            )}
+          </div>
+        </div>
+        <div className="modal-footer">
+          {existing && <button className="btn btn-danger-tinted" onClick={() => onDelete(agent.id, date)}>Supprimer</button>}
+          <div style={{ flex: 1 }} />
+          <button className="btn btn-ghost" onClick={onClose}>Annuler</button>
+          <button className="btn btn-primary" onClick={save}>Enregistrer</button>
+        </div>
+      </div>
+    </div>);
+
+}
+
+function LeaveRequestModal({ user, team, onSave, onClose }) {
+  const [agentId, setAgentId] = useState(team.agents?.[0]?.id || '');
+  const [type, setType] = useState('CP');
+  const [from, setFrom] = useState(fmt(new Date()));
+  const [to, setTo] = useState(fmt(new Date()));
+  const [note, setNote] = useState('');
+  const days = Math.max(0, Math.round((parseD(to) - parseD(from)) / 86400000) + 1);
+  return (
+    <div className="overlay" onClick={(e) => e.target === e.currentTarget && onClose()}>
+      <div className="modal">
+        <div className="modal-header">
+          <div className="modal-title">Demande de congé</div>
+          <div className="modal-sub">À valider avant inscription au planning</div>
+        </div>
+        <div className="modal-body">
+          <label className="field-label">Agent concerné</label>
+          <select className="input" value={agentId} onChange={(e) => setAgentId(e.target.value)} style={{ marginBottom: 14 }}>
+            {(team.agents || []).map((a) => <option key={a.id} value={a.id}>{a.name}</option>)}
+          </select>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, marginBottom: 14 }}>
+            <div><label className="field-label">Du</label><input type="date" className="input" value={from} onChange={(e) => setFrom(e.target.value)} /></div>
+            <div><label className="field-label">Au</label><input type="date" className="input" value={to} onChange={(e) => setTo(e.target.value)} /></div>
+          </div>
+          {days > 0 && <div className="chip chip-info" style={{ marginBottom: 14 }}>{days} jour{days > 1 ? 's' : ''} demandé{days > 1 ? 's' : ''}</div>}
+          <label className="field-label">Type</label>
+          <select className="input" value={type} onChange={(e) => setType(e.target.value)} style={{ marginBottom: 14 }}>
+            {LEAVE_TYPES.map((t) => <option key={t.code} value={t.code}>{t.label}</option>)}
+          </select>
+          <label className="field-label">Note (optionnel)</label>
+          <textarea className="input" placeholder="Précisions, raison…" value={note} onChange={(e) => setNote(e.target.value)} />
+        </div>
+        <div className="modal-footer">
+          <button className="btn btn-ghost" onClick={onClose}>Annuler</button>
+          <button className="btn btn-primary" disabled={!agentId} onClick={() => onSave({ id: mkId(), agentId, userId: user.id, teamId: team.id, dateFrom: from, dateTo: to, type, note, status: 'pending', createdAt: new Date().toISOString() })}>Envoyer</button>
+        </div>
+      </div>
+    </div>);
+
+}
+
+function ReviewLeaveModal({ req, agents, onReview, onClose }) {
+  const [note, setNote] = useState(req.managerNote || '');
+  const agent = agents.find((a) => a.id === (req.agentId || req.userId));
+  const lt = LEAVE_MAP[req.type] || { label: req.type, color: '#999' };
+  const days = Math.round((parseD(req.dateTo) - parseD(req.dateFrom)) / 86400000) + 1;
+  return (
+    <div className="overlay" onClick={(e) => e.target === e.currentTarget && onClose()}>
+      <div className="modal">
+        <div className="modal-header">
+          <div className="modal-title">Demande de congé</div>
+          <div className="modal-sub">{req.status === 'pending' ? 'Vérifier et statuer' : req.status === 'approved' ? 'Demande approuvée — annulable' : 'Demande refusée'}</div>
+        </div>
+        <div className="modal-body">
+          <div style={{ padding: 14, background: 'var(--surface-2)', borderRadius: 12, marginBottom: 14 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 10 }}>
+              <Avatar name={agent?.name || '?'} color={agent?.color || '#999'} size={36} />
+              <div style={{ flex: 1 }}>
+                <div style={{ fontWeight: 600, fontSize: 14 }}>{agent?.name || 'Inconnu'}</div>
+                <div className="caption">Soumis le {new Date(req.createdAt).toLocaleDateString('fr-FR')}</div>
+              </div>
+              <span className="chip" style={{ background: `${lt.color}20`, color: lt.color }}>{lt.label}</span>
+            </div>
+            <div className="caption" style={{ marginBottom: 4 }}>
+              <strong style={{ color: 'var(--text)' }}>{parseD(req.dateFrom).toLocaleDateString('fr-FR')}</strong>
+              <span style={{ margin: '0 6px' }}>→</span>
+              <strong style={{ color: 'var(--text)' }}>{parseD(req.dateTo).toLocaleDateString('fr-FR')}</strong>
+              <span className="chip" style={{ marginLeft: 8, background: 'var(--accent-soft)', color: 'var(--accent)' }}>{days} jour{days > 1 ? 's' : ''}</span>
+            </div>
+            {req.note && <div style={{ marginTop: 8, fontSize: 12, color: 'var(--text-2)', fontStyle: 'italic' }}>"{req.note}"</div>}
+            {req.managerNote && <div style={{ marginTop: 8, fontSize: 12, color: 'var(--accent)' }}>Manager : "{req.managerNote}"</div>}
+          </div>
+          {req.status === 'pending' &&
+          <>
+              <label className="field-label">Note au collaborateur (optionnel)</label>
+              <textarea className="input" placeholder="Message pour le collaborateur…" value={note} onChange={(e) => setNote(e.target.value)} />
+            </>
+          }
+        </div>
+        <div className="modal-footer">
+          {req.status === 'pending' ?
+          <>
+              <button className="btn btn-ghost" onClick={onClose}>Fermer</button>
+              <button className="btn btn-danger-tinted" onClick={() => onReview(req.id, 'refused', note)}>Refuser</button>
+              <button className="btn btn-primary" onClick={() => onReview(req.id, 'approved', note)}>Approuver</button>
+            </> :
+          req.status === 'approved' ?
+          <>
+              <button className="btn btn-ghost" onClick={onClose}>Fermer</button>
+              <button className="btn btn-danger-tinted" onClick={() => {if (confirm('Annuler ce congé ? Les absences correspondantes seront retirées du planning.')) onReview(req.id, 'cancelled', note);}}>Annuler le congé</button>
+            </> :
+
+          <>
+              <button className="btn btn-ghost" onClick={onClose}>Fermer</button>
+              <button className="btn btn-primary" onClick={() => onReview(req.id, 'pending', note)}>Réexaminer</button>
+            </>
+          }
+        </div>
+      </div>
+    </div>);
+
+}
+
+function JoinTeamModal({ onJoin, onClose }) {
+  const [code, setCode] = useState('');
+  return (
+    <div className="overlay" onClick={(e) => e.target === e.currentTarget && onClose()}>
+      <div className="modal" style={{ maxWidth: 420 }}>
+        <div className="modal-header">
+          <div className="modal-title">Rejoindre une équipe</div>
+          <div className="modal-sub">Entrez un code d'invitation pour rejoindre une équipe existante.</div>
+        </div>
+        <div className="modal-body">
+          <label className="field-label">Code d'invitation</label>
+          <input className="input" value={code} onChange={(e) => setCode(e.target.value)} placeholder="R9DAGG" />
+        </div>
+        <div className="modal-footer">
+          <button className="btn btn-ghost" onClick={onClose}>Annuler</button>
+          <button className="btn btn-primary" disabled={!code.trim()} onClick={() => onJoin(code)}>Rejoindre</button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function CreateTeamModal({ onSave, onClose }) {
+  const [name, setName] = useState('');
+  const [color, setColor] = useState(TEAM_COLORS[0]);
+  const [nbA, setNbA] = useState(8);
+  const [nbT, setNbT] = useState(20);
+  const [target, setTarget] = useState(6);
+  const save = () => {
+    if (!name.trim()) return;
+    const agents = Array.from({ length: nbA }, (_, i) => ({ id: mkId(), name: `Agent ${i + 1}`, color: AGENT_COLORS[i % AGENT_COLORS.length], prefEnabled: false, preferred: [], managerial: false }));
+    const tournees = Array.from({ length: nbT }, (_, i) => ({ id: mkId(), name: `Tournée ${String(i + 1).padStart(2, '0')}`, color: T_COLORS[i % T_COLORS.length], num: i + 1, categoryId: null }));
+    const categories = [{ id: mkId(), name: 'Remises', color: CAT_COLORS[0] }, { id: mkId(), name: 'Collectes', color: CAT_COLORS[1] }];
+    onSave({ id: mkId(), name: name.trim(), color, code: generateCode(), targetPresence: target, agents, tournees, categories });
+  };
+  return (
+    <div className="overlay" onClick={(e) => e.target === e.currentTarget && onClose()}>
+      <div className="modal">
+        <div className="modal-header">
+          <div className="modal-title">Nouvelle équipe</div>
+          <div className="modal-sub">Configurez votre équipe en quelques secondes</div>
+        </div>
+        <div className="modal-body">
+          <label className="field-label">Nom de l'équipe</label>
+          <input className="input" placeholder="Ex: Équipe Nord" value={name} onChange={(e) => setName(e.target.value)} style={{ marginBottom: 14 }} autoFocus />
+          <label className="field-label">Couleur</label>
+          <div style={{ display: 'flex', gap: 8, marginBottom: 14, flexWrap: 'wrap' }}>
+            {TEAM_COLORS.map((c) =>
+            <div key={c} className={`swatch${color === c ? ' selected' : ''}`} style={{ background: c }} onClick={() => setColor(c)} />
+            )}
+          </div>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 10 }}>
+            <div><label className="field-label">Agents</label><input className="input" type="number" min="1" max="80" value={nbA} onChange={(e) => setNbA(+e.target.value)} /></div>
+            <div><label className="field-label">Tournées</label><input className="input" type="number" min="1" max="100" value={nbT} onChange={(e) => setNbT(+e.target.value)} /></div>
+            <div><label className="field-label">Objectif</label><input className="input" type="number" min="1" max={nbA} value={target} onChange={(e) => setTarget(+e.target.value)} /></div>
+          </div>
+        </div>
+        <div className="modal-footer">
+          <button className="btn btn-ghost" onClick={onClose}>Annuler</button>
+          <button className="btn btn-primary" disabled={!name.trim()} onClick={save}>Créer</button>
+        </div>
+      </div>
+    </div>);
+
+}
+
+function CategoryModal({ category, onSave, onClose }) {
+  const [name, setName] = useState(category?.name || '');
+  const [color, setColor] = useState(category?.color || CAT_COLORS[0]);
+  return (
+    <div className="overlay" onClick={(e) => e.target === e.currentTarget && onClose()}>
+      <div className="modal">
+        <div className="modal-header">
+          <div className="modal-title">{category ? 'Modifier la catégorie' : 'Nouvelle catégorie'}</div>
+        </div>
+        <div className="modal-body">
+          <label className="field-label">Nom</label>
+          <input className="input" placeholder="Ex: Remises, Collectes…" value={name} onChange={(e) => setName(e.target.value)} style={{ marginBottom: 14 }} autoFocus />
+          <label className="field-label">Couleur</label>
+          <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+            {CAT_COLORS.map((c) =>
+            <div key={c} className={`swatch${color === c ? ' selected' : ''}`} style={{ background: c }} onClick={() => setColor(c)} />
+            )}
+          </div>
+        </div>
+        <div className="modal-footer">
+          <button className="btn btn-ghost" onClick={onClose}>Annuler</button>
+          <button className="btn btn-primary" disabled={!name.trim()} onClick={() => onSave({ id: category?.id || mkId(), name: name.trim(), color })}>Enregistrer</button>
+        </div>
+      </div>
+    </div>);
+
+}
+
+function TeamSettingsModal({ team, onSave, onDelete, onClose, canDelete }) {
+  const [name, setName] = useState(team.name);
+  const [target, setTarget] = useState(team.targetPresence || 5);
+  const [color, setColor] = useState(team.color);
+  const [copied, setCopied] = useState(false);
+  function copyCode() {navigator.clipboard?.writeText(team.code).then(() => {setCopied(true);setTimeout(() => setCopied(false), 2000);});}
+  return (
+    <div className="overlay" onClick={(e) => e.target === e.currentTarget && onClose()}>
+      <div className="modal">
+        <div className="modal-header">
+          <div className="modal-title">Paramètres de l'équipe</div>
+        </div>
+        <div className="modal-body">
+          <label className="field-label">Nom</label>
+          <input className="input" value={name} onChange={(e) => setName(e.target.value)} style={{ marginBottom: 14 }} />
+          <label className="field-label">Couleur</label>
+          <div style={{ display: 'flex', gap: 8, marginBottom: 14, flexWrap: 'wrap' }}>
+            {TEAM_COLORS.map((c) => <div key={c} className={`swatch${color === c ? ' selected' : ''}`} style={{ background: c }} onClick={() => setColor(c)} />)}
+          </div>
+          <label className="field-label">Objectif présents / jour</label>
+          <input className="input" type="number" min="1" max="99" value={target} onChange={(e) => setTarget(+e.target.value)} style={{ marginBottom: 14 }} />
+          <label className="field-label">Code d'accès équipe</label>
+          <div style={{ display: 'flex', gap: 8, marginBottom: 6 }}>
+            <div style={{ flex: 1, height: 42, background: 'var(--surface-2)', borderRadius: 10, display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, fontSize: 18, letterSpacing: 6, color: 'var(--accent)' }}>{team.code}</div>
+            <button className="btn btn-tinted" style={{ height: 42 }} onClick={copyCode}><Icon name="copy" size={14} />{copied ? 'Copié' : 'Copier'}</button>
+          </div>
+          <div className="caption" style={{ marginBottom: 14 }}>Partagez ce code avec vos agents pour qu'ils rejoignent l'équipe.</div>
+        </div>
+        <div className="modal-footer">
+          {canDelete && <button className="btn btn-danger-tinted" onClick={() => {if (confirm('Supprimer cette équipe ? Cette action est irréversible.')) onDelete();}}>Supprimer l'équipe</button>}
+          <div style={{ flex: 1 }} />
+          <button className="btn btn-ghost" onClick={onClose}>Annuler</button>
+          <button className="btn btn-primary" onClick={() => onSave({ name: name.trim(), color, targetPresence: target })}>Enregistrer</button>
+        </div>
+      </div>
+    </div>);
+
+}
+
+function ImportModal({ onApply, onClose }) {
+  const [drag, setDrag] = useState(false);
+  const [parsed, setParsed] = useState(null);
+  const [err, setErr] = useState('');
+  const fileRef = useRef();
+  function parseXlsx(ab) {
+    try {
+      const wb = XLSX.read(ab, { type: 'array' });
+      const name = wb.SheetNames[0];
+      const rows = XLSX.utils.sheet_to_json(wb.Sheets[name], { header: 1, defval: '' });
+      const agents = [...new Set(rows.slice(1).map((r) => String(r[0] || '').trim()).filter((v) => v && v.length > 2 && v.length < 40 && !/^\d/.test(v)))].slice(0, 80);
+      const tournees = [...new Set(rows[0]?.slice(1).map((c) => String(c || '').trim()).filter((v) => v && v.length > 0 && v.length < 30) || [])].slice(0, 100);
+      setParsed({ agents, tournees, sheet: name });setErr('');
+    } catch (e) {setErr('Erreur: ' + e.message);}
+  }
+  function handleFile(f) {const r = new FileReader();r.onload = (e) => parseXlsx(e.target.result);r.readAsArrayBuffer(f);}
+  function apply() {
+    const agents = (parsed?.agents || []).map((name, i) => ({ id: mkId(), name, color: AGENT_COLORS[i % AGENT_COLORS.length], prefEnabled: false, preferred: [] }));
+    const tournees = (parsed?.tournees || []).map((name, i) => ({ id: mkId(), name, color: T_COLORS[i % T_COLORS.length], num: i + 1, categoryId: null }));
+    onApply({ agents, tournees });
+  }
+  return (
+    <div className="overlay" onClick={(e) => e.target === e.currentTarget && onClose()}>
+      <div className="modal" style={{ maxWidth: 520 }}>
+        <div className="modal-header">
+          <div className="modal-title">Import Excel</div>
+          <div className="modal-sub">Agents (col A) et tournées (ligne 1) détectés automatiquement</div>
+        </div>
+        <div className="modal-body">
+          <input ref={fileRef} type="file" accept=".xlsx,.xls,.csv" style={{ display: 'none' }} onChange={(e) => e.target.files[0] && handleFile(e.target.files[0])} />
+          <div className={`dropzone${drag ? ' over' : ''}`}
+          onDragOver={(e) => {e.preventDefault();setDrag(true);}}
+          onDragLeave={() => setDrag(false)}
+          onDrop={(e) => {e.preventDefault();setDrag(false);if (e.dataTransfer.files[0]) handleFile(e.dataTransfer.files[0]);}}
+          onClick={() => fileRef.current.click()}>
+            <Icon name="upload" size={32} />
+            <div style={{ fontWeight: 600, marginTop: 10 }}>Glissez votre fichier Excel</div>
+            <div className="caption" style={{ marginTop: 4 }}>ou cliquez pour sélectionner</div>
+          </div>
+          {err && <div className="chip chip-danger" style={{ marginTop: 12 }}>⚠ {err}</div>}
+          {parsed && !err &&
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, marginTop: 14 }}>
+              <div style={{ padding: 14, background: 'var(--surface-2)', borderRadius: 12 }}>
+                <div style={{ fontSize: 28, fontWeight: 700, color: 'var(--accent)' }}>{parsed.agents.length}</div>
+                <div className="caption" style={{ fontWeight: 500 }}>agents détectés</div>
+              </div>
+              <div style={{ padding: 14, background: 'var(--surface-2)', borderRadius: 12 }}>
+                <div style={{ fontSize: 28, fontWeight: 700, color: 'var(--success)' }}>{parsed.tournees.length}</div>
+                <div className="caption" style={{ fontWeight: 500 }}>tournées détectées</div>
+              </div>
+            </div>
+          }
+        </div>
+        <div className="modal-footer">
+          <button className="btn btn-ghost" onClick={onClose}>Annuler</button>
+          {parsed && !err && <button className="btn btn-primary" onClick={apply}>Appliquer</button>}
+        </div>
+      </div>
+    </div>);
+
+}
+
+// ═══ SIDEBAR ════════════════════════════════════════════════════════════════
+function Sidebar({ user, teams, curTeamId, setCurTeamId, tab, setTab, pendingCount, onCreateTeam }) {
+  const nav = [
+  { k: 'planning', icon: 'calendar', label: 'Planning' },
+  { k: 'optimisation', icon: 'zap', label: 'Optimisation' },
+  { k: 'leaves', icon: 'leaf', label: 'Congés', badge: pendingCount },
+  { k: 'agents', icon: 'users', label: 'Agents' },
+  { k: 'tournees', icon: 'route', label: 'Tournées' },
+  { k: 'dashboard', icon: 'chart', label: 'Tableau de bord' },
+  { k: 'settings', icon: 'settings', label: 'Paramètres' }];
+
+  return (
+    <aside className="sidebar">
+
+      <div className="sb-section">
+        {nav.map((n) =>
+        <div key={n.k} className={`sb-item${tab === n.k ? ' active' : ''}`} onClick={() => setTab(n.k)}>
+            <span className="sb-icon"><Icon name={n.icon} /></span>
+            <span style={{ flex: 1 }}>{n.label}</span>
+            {n.badge > 0 && <span className="sb-badge">{n.badge}</span>}
+          </div>
+        )}
+      </div>
+
+      <div className="sb-section">
+        <div className="sb-section-label">Équipes</div>
+        {teams.map((t) =>
+        <div key={t.id} className={`sb-item sb-item-team${t.id === curTeamId ? ' active' : ''}`} onClick={() => setCurTeamId(t.id)}>
+            <div className="dot" style={{ background: t.color }} />
+            <span className="truncate" style={{ flex: 1 }}>{t.name}</span>
+            <span className="sb-count">{t.agents?.length || 0}</span>
+          </div>
+        )}
+        <div className="sb-item sb-add" onClick={onCreateTeam}>
+          <span className="sb-icon"><Icon name="plus" size={16} /></span>
+          Nouvelle équipe
+        </div>
+      </div>
+
+      <div className="sb-user">
+        <div className="sb-user-inner">
+          <Avatar name={user.name} color={user.color} size={32} />
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <div style={{ fontSize: 13, fontWeight: 600 }} className="truncate">{user.name}</div>
+            <div className="caption">Manager</div>
+          </div>
+        </div>
+      </div>
+    </aside>);
+
+}
+
+function AbsencesSummary({ team, absMap, year, month }) {
+  const [selectedAgents, setSelectedAgents] = useState(new Set());
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
+  const allAgents = team.agents || [];
+  const filterActive = selectedAgents.size > 0;
+  const filteredAgents = filterActive ? allAgents.filter(a => selectedAgents.has(a.id)) : allAgents;
+
+  const perAgent = filteredAgents.map(a => {
+    const byType = {};
+    let total = 0;
+    for (let d = 1; d <= daysInMonth; d++) {
+      const ds = `${year}-${String(month + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+      const abs = absMap[`${a.id}__${ds}`];
+      if (abs) { byType[abs.type] = (byType[abs.type] || 0) + 1; total++; }
+    }
+    return { agent: a, byType, total };
+  }).sort((x, y) => y.total - x.total);
+
+  const totalsByType = {};
+  let grandTotal = 0;
+  perAgent.forEach(({ byType }) => {
+    Object.entries(byType).forEach(([k, v]) => { totalsByType[k] = (totalsByType[k] || 0) + v; grandTotal += v; });
+  });
+  const sortedTypes = Object.entries(totalsByType).sort((a, b) => b[1] - a[1]);
+
+  function toggleAgent(id) {
+    setSelectedAgents(prev => {
+      const n = new Set(prev);
+      if (n.has(id)) n.delete(id); else n.add(id);
+      return n;
+    });
+  }
+
+  return (
+    <div style={{ borderTop: '1px solid var(--border)', padding: '14px 18px 16px', flexShrink: 0, background: 'var(--surface)' }}>
+      <div style={{ display: 'flex', alignItems: 'baseline', gap: 10, marginBottom: 10 }}>
+        <span className="label-sm">Aperçu des absences</span>
+        <span className="caption">{FR_MONTHS[month]} {year}</span>
+        <span style={{ marginLeft: 'auto', display: 'flex', alignItems: 'baseline', gap: 4 }}>
+          <span style={{ fontSize: 18, fontWeight: 700, color: grandTotal > 0 ? 'var(--danger)' : 'var(--success)', letterSpacing: '-0.01em' }}>{grandTotal}</span>
+          <span className="caption">jour{grandTotal > 1 ? 's' : ''} d'absence</span>
+        </span>
+      </div>
+      <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4, marginBottom: 12 }}>
+        <button onClick={() => setSelectedAgents(new Set())}
+          style={{ height: 24, padding: '0 9px', borderRadius: 6, border: '1px solid', fontSize: 11, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit', transition: '.12s',
+            background: !filterActive ? 'var(--accent)' : 'var(--surface)',
+            borderColor: !filterActive ? 'var(--accent)' : 'var(--border)',
+            color: !filterActive ? '#fff' : 'var(--text-2)' }}>
+          Tous ({allAgents.length})
+        </button>
+        {allAgents.map(a => {
+          const on = selectedAgents.has(a.id);
+          return (
+            <button key={a.id} onClick={() => toggleAgent(a.id)}
+              style={{ height: 24, padding: '0 9px', borderRadius: 6, border: '1px solid', fontSize: 11, fontWeight: 500, cursor: 'pointer', fontFamily: 'inherit', display: 'inline-flex', alignItems: 'center', gap: 5,
+                background: on ? `${a.color}20` : 'var(--surface)',
+                borderColor: on ? a.color : 'var(--border)',
+                color: on ? a.color : 'var(--text-2)', transition: '.12s' }}>
+              <span style={{ width: 6, height: 6, borderRadius: '50%', background: a.color }} />
+              {a.name}
+            </button>
+          );
+        })}
+      </div>
+      <div style={{ display: 'grid', gridTemplateColumns: '180px 1fr', gap: 16, alignItems: 'start' }}>
+        <div>
+          <div className="label-sm" style={{ marginBottom: 7 }}>Par type</div>
+          {sortedTypes.length === 0 ? (
+            <div className="caption" style={{ padding: '6px 0' }}>Aucune absence</div>
+          ) : (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+              {sortedTypes.map(([code, n]) => {
+                const at = ABS_MAP[code];
+                if (!at) return null;
+                return (
+                  <div key={code} style={{ display: 'flex', alignItems: 'center', gap: 7 }}>
+                    <span style={{ width: 8, height: 8, borderRadius: 2, background: at.color, flexShrink: 0 }} />
+                    <span style={{ fontSize: 12, color: at.color, fontWeight: 600 }}>{at.label}</span>
+                    <span style={{ marginLeft: 'auto', fontSize: 12, color: 'var(--text)', fontWeight: 600, fontVariantNumeric: 'tabular-nums' }}>{n}j</span>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </div>
+        <div>
+          <div className="label-sm" style={{ marginBottom: 7 }}>Par agent</div>
+          {perAgent.filter(x => x.total > 0).length === 0 ? (
+            <div className="caption" style={{ padding: '6px 0' }}>{filterActive ? 'Les agents sélectionnés n\'ont aucune absence ce mois.' : 'Tous les agents sont présents.'}</div>
+          ) : (
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(170px,1fr))', gap: 6, maxHeight: 110, overflowY: 'auto', paddingRight: 4 }}>
+              {perAgent.filter(x => x.total > 0).map(({ agent, byType, total }) => (
+                <div key={agent.id} style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '5px 8px', borderRadius: 8, background: 'var(--surface-2)' }}>
+                  <Avatar name={agent.name} color={agent.color} size={22} />
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <div style={{ fontSize: 12, fontWeight: 600 }} className="truncate">{agent.name}</div>
+                    <div style={{ display: 'flex', gap: 3, marginTop: 2, flexWrap: 'wrap' }}>
+                      {Object.entries(byType).map(([code, n]) => {
+                        const at = ABS_MAP[code];
+                        return (
+                          <span key={code} title={`${at?.label} · ${n}j`} style={{ padding: '0 5px', borderRadius: 3, fontSize: 9, fontWeight: 700, background: `${at?.color}22`, color: at?.color, lineHeight: '14px' }}>
+                            {code}·{n}
+                          </span>
+                        );
+                      })}
+                    </div>
+                  </div>
+                  <span style={{ fontSize: 13, fontWeight: 700, color: 'var(--text)', fontVariantNumeric: 'tabular-nums' }}>{total}</span>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ═══ PLANNING VIEW ══════════════════════════════════════════════════════════
+function PlanningView({ team, year, month, setYear, setMonth, selDay, setSelDay, absMap, assignments, setAssignments, onCellClick, holidays, updateTeam }) {
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
+  const today = fmt(new Date());
+  const dayKey = `${team.id}__${selDay}`;
+  const dayAssign = assignments[dayKey] || {};
+  const selDate = parseD(selDay);
+  const selLabel = selDate.toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' });
+  const [catFilter, setCatFilter] = useState('all');
+  const [editingTarget, setEditingTarget] = useState(false);
+  const [targetDraft, setTargetDraft] = useState(team.targetPresence || 5);
+
+  useEffect(() => {setTargetDraft(team.targetPresence || 5);}, [team.targetPresence]);
+
+  const dayPresents = (team.agents || []).filter((a) => !absMap[`${a.id}__${selDay}`]);
+  const dayAbsents = (team.agents || []).filter((a) => !!absMap[`${a.id}__${selDay}`]);
+  const visibleTournees = catFilter === 'all' ? team.tournees : catFilter === 'none' ? team.tournees.filter((t) => !t.categoryId) : team.tournees.filter((t) => t.categoryId === catFilter);
+  const covered = visibleTournees.filter((t) => dayAssign[t.id]).length;
+  const target = team.targetPresence || Math.ceil((team.agents || []).length * 0.8);
+  const presColor = dayPresents.length >= target ? 'var(--success)' : dayPresents.length >= target * 0.7 ? 'var(--warning)' : 'var(--danger)';
+  const totalAg = (team.agents || []).length;
+
+  function doAutoAssign() {
+    const present = dayPresents;
+    if (!present.length) return;
+    const tournees = visibleTournees;
+    const res = { ...dayAssign };
+    // Track categories each agent has across the WHOLE day (not just visible)
+    const agentCategories = {};
+    Object.entries(res).forEach(([tId, aId]) => {
+      if (!aId) return;
+      const t = team.tournees.find((x) => x.id === tId);
+      if (!t) return;
+      const cat = t.categoryId || '__none';
+      (agentCategories[aId] = agentCategories[aId] || new Set()).add(cat);
+    });
+    // Clear visible tournees so they get re-distributed
+    visibleTournees.forEach((t) => {
+      const aId = res[t.id];
+      if (aId) {
+        const tCat = t.categoryId || '__none';
+        agentCategories[aId]?.delete(tCat);
+      }
+      delete res[t.id];
+    });
+    // Distribute respecting: 1 tournée per category per agent per day
+    let idx = 0;
+    tournees.forEach((t) => {
+      const tCat = t.categoryId || '__none';
+      // Eligible: doesn't already have this category, matches pref
+      let elig = present.filter((a) => {
+        if (agentCategories[a.id]?.has(tCat)) return false;
+        if (a.prefEnabled && a.preferred?.length > 0) return a.preferred.includes(t.id);
+        return true;
+      });
+      if (elig.length === 0) {
+        // Relax pref constraint, keep category constraint
+        elig = present.filter((a) => !agentCategories[a.id]?.has(tCat));
+      }
+      if (elig.length === 0) {idx++;return;}
+      const chosen = elig[idx % elig.length];
+      res[t.id] = chosen.id;
+      (agentCategories[chosen.id] = agentCategories[chosen.id] || new Set()).add(tCat);
+      idx++;
+    });
+    setAssignments((prev) => ({ ...prev, [dayKey]: res }));
+  }
+  function clearAssignments() {setAssignments((prev) => ({ ...prev, [dayKey]: {} }));}
+  function setAssign(tId, aId) {setAssignments((prev) => ({ ...prev, [dayKey]: { ...(prev[dayKey] || {}), [tId]: aId || null } }));}
+  function prevMonth() {if (month === 0) {setMonth(11);setYear((y) => y - 1);} else setMonth((m) => m - 1);}
+  function nextMonth() {if (month === 11) {setMonth(0);setYear((y) => y + 1);} else setMonth((m) => m + 1);}
+  function saveTarget() {const n = Math.max(1, Math.min(99, parseInt(targetDraft) || 1));updateTeam((t) => ({ ...t, targetPresence: n }));setEditingTarget(false);}
+
+  const cats = team.categories || [];
+  const noneCount = team.tournees.filter((t) => !t.categoryId).length;
+
+  return (
+    <div style={{ display: 'flex', flex: 1, overflow: 'hidden' }}>
+      {/* Calendar */}
+      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', padding: '0px', overflow: 'hidden' }}>
+        <div className="card" style={{ flex: 1, overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
+          <div className="card-header">
+            <div>
+              <div className="card-title">{FR_MONTHS[month]} {year}</div>
+              <div className="caption" style={{ marginTop: 2 }}>{totalAg} agent{totalAg > 1 ? 's' : ''}</div>
+            </div>
+
+            {/* Day stats inline */}
+            <div style={{ marginLeft: 24, display: 'flex', alignItems: 'center', gap: 14, padding: '6px 14px', borderRadius: 12, background: 'var(--surface-2)', flexWrap: 'wrap' }}>
+              <div style={{ display: 'flex', flexDirection: 'column', lineHeight: 1.1 }}>
+                <span className="caption" style={{ textTransform: 'capitalize', fontSize: 11 }}>{selLabel}</span>
+                <div style={{ display: 'flex', alignItems: 'baseline', gap: 4 }}>
+                  <span style={{ fontSize: 18, fontWeight: 700, color: presColor, letterSpacing: '-0.01em', fontVariantNumeric: 'tabular-nums' }}>{dayPresents.length}</span>
+                  <span style={{ fontSize: 11, color: 'var(--text-2)' }}>/ {totalAg} présents</span>
+                </div>
+              </div>
+              <div style={{ width: 80, display: 'flex', flexDirection: 'column', gap: 4 }}>
+                <div className="progress" style={{ height: 5 }}>
+                  <div className="progress-fill" style={{ width: `${Math.min(100, dayPresents.length / (totalAg || 1) * 100)}%`, background: presColor }} />
+                  <div className="progress-target" style={{ left: `${Math.min(100, target / (totalAg || 1) * 100)}%` }} />
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', fontSize: 10, color: 'var(--text-2)' }}>
+                  <span>Objectif</span>
+                  {editingTarget ?
+                    <input type="number" min="1" max="99" value={targetDraft}
+                      onChange={(e) => setTargetDraft(e.target.value)}
+                      onKeyDown={(e) => { if (e.key === 'Enter') saveTarget(); if (e.key === 'Escape') setEditingTarget(false); }}
+                      onBlur={saveTarget}
+                      autoFocus
+                      style={{ width: 32, height: 18, padding: '0 3px', border: '1.5px solid var(--accent)', borderRadius: 4, fontFamily: 'inherit', fontSize: 11, fontWeight: 700, color: 'var(--text)', background: 'var(--surface)', textAlign: 'center' }} /> :
+                    <button onClick={() => setEditingTarget(true)}
+                      style={{ background: 'transparent', border: 'none', padding: 0, cursor: 'pointer', fontFamily: 'inherit', fontSize: 11, fontWeight: 700, color: 'var(--text)', display: 'inline-flex', alignItems: 'center', gap: 3 }}
+                      title="Modifier">
+                      {target}<Icon name="edit" size={9} />
+                    </button>
+                  }
+                </div>
+              </div>
+              {dayAbsents.length > 0 && (
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4, maxWidth: 380, paddingLeft: 12, borderLeft: '1px solid var(--border)' }}>
+                  {dayAbsents.slice(0, 6).map((a) => {
+                    const abs = absMap[`${a.id}__${selDay}`];
+                    const at = ABS_MAP[abs.type];
+                    return (
+                      <span key={a.id} className="chip" style={{ background: `${at.color}15`, color: at.color, fontSize: 10 }}>
+                        {lastName(a.name)} · {abs.type}
+                      </span>);
+                  })}
+                  {dayAbsents.length > 6 && <span className="chip chip-neutral" style={{ fontSize: 10 }}>+{dayAbsents.length - 6}</span>}
+                </div>
+              )}
+            </div>
+
+            <div style={{ marginLeft: 'auto', display: 'flex', gap: 6 }}>
+              <button className="btn btn-secondary btn-icon" onClick={prevMonth}><Icon name="chevron-left" size={16} /></button>
+              <button className="btn btn-secondary btn-sm" onClick={() => {const n = new Date();setYear(n.getFullYear());setMonth(n.getMonth());setSelDay(fmt(n));}}>Aujourd'hui</button>
+              <button className="btn btn-secondary btn-icon" onClick={nextMonth}><Icon name="chevron-right" size={16} /></button>
+            </div>
+          </div>
+          <div style={{ flex: 1, overflow: 'auto' }}>
+            <div className="cal" style={{ gridTemplateColumns: `180px repeat(${daysInMonth},minmax(34px,1fr))` }}>
+              <div className="cal-head">Agent</div>
+              {Array.from({ length: daysInMonth }, (_, i) => {
+                const d = i + 1,dow = new Date(year, month, d).getDay(),isWe = dow === 0 || dow === 6;
+                const ds = `${year}-${String(month + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+                const isHol = holidays.has(ds);
+                return (
+                  <div key={d} className={`cal-day-head${ds === today ? ' today' : ''}${isWe ? ' we' : ''}${isHol ? ' hol' : ''}`}>
+                    <div className="day-name">{FR_DOW[(dow + 6) % 7]}</div>
+                    <div className="day-num">{d}</div>
+                  </div>);
+
+              })}
+              {(team.agents || []).map((agent) =>
+              <React.Fragment key={agent.id}>
+                  <div className="cal-agent-cell">
+                    <div className="dot" style={{ background: agent.color }} />
+                    <span className="truncate">{agent.name}</span>
+                  </div>
+                  {Array.from({ length: daysInMonth }, (_, i) => {
+                  const d = i + 1,dow = new Date(year, month, d).getDay(),isWe = dow === 0 || dow === 6;
+                  const ds = `${year}-${String(month + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+                  const abs = absMap[`${agent.id}__${ds}`];
+                  const at = abs ? ABS_MAP[abs.type] : null;
+                  const isHol = holidays.has(ds);
+                  return (
+                    <div key={d}
+                    className={`cal-cell${isWe ? ' we' : ''}${ds === selDay ? ' sel' : ''}${isHol ? ' hol' : ''}`}
+                    onClick={() => {setSelDay(ds);if (!isWe && !isHol) onCellClick(agent, ds);}}
+                    title={abs ? `${agent.name} — ${at?.label}` : isHol ? 'Jour férié' : 'Présent'}>
+                        {abs && <div className="abs-tag" style={{ background: `${at?.color}25`, color: at?.color }}>{abs.type}</div>}
+                        {isHol && !abs && <div className="hol-dot" />}
+                      </div>);
+
+                })}
+                </React.Fragment>
+              )}
+            </div>
+          </div>
+          <AbsencesSummary team={team} absMap={absMap} year={year} month={month}/>
+        </div>
+      </div>
+
+      {/* Day panel removed — calendar prend toute la largeur. Présence intégrée au header. */}
+    </div>);
+
+}
+
+// ═══ OPTIMISATION VIEW ════════════════════════════════════════════════════
+function OptimisationView({ team, selDay, setSelDay, absMap, assignments, setAssignments }) {
+  const [catFilter, setCatFilter] = useState('all');
+  const dayKey = `${team.id}__${selDay}`;
+  const dayAssign = assignments[dayKey] || {};
+  const selDate = parseD(selDay);
+  const selLabel = selDate.toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+  const cats = team.categories || [];
+  const noneCount = team.tournees.filter((t) => !t.categoryId).length;
+
+  const dayPresents = (team.agents || []).filter((a) => !absMap[`${a.id}__${selDay}`]);
+  const visibleTournees = catFilter === 'all' ? team.tournees : catFilter === 'none' ? team.tournees.filter((t) => !t.categoryId) : team.tournees.filter((t) => t.categoryId === catFilter);
+  const covered = visibleTournees.filter((t) => dayAssign[t.id]).length;
+
+  function doAutoAssign() {
+    const present = dayPresents;
+    if (!present.length) return;
+    const tournees = visibleTournees;
+    const res = { ...dayAssign };
+    const agentCategories = {};
+    Object.entries(res).forEach(([tId, aId]) => {
+      if (!aId) return;
+      const t = team.tournees.find((x) => x.id === tId);
+      if (!t) return;
+      const cat = t.categoryId || '__none';
+      (agentCategories[aId] = agentCategories[aId] || new Set()).add(cat);
+    });
+    visibleTournees.forEach((t) => {
+      const aId = res[t.id];
+      if (aId) {
+        const tCat = t.categoryId || '__none';
+        agentCategories[aId]?.delete(tCat);
+      }
+      delete res[t.id];
+    });
+    let idx = 0;
+    tournees.forEach((t) => {
+      const tCat = t.categoryId || '__none';
+      let elig = present.filter((a) => {
+        if (agentCategories[a.id]?.has(tCat)) return false;
+        if (a.prefEnabled && a.preferred?.length > 0) return a.preferred.includes(t.id);
+        return true;
+      });
+      if (elig.length === 0) elig = present.filter((a) => !agentCategories[a.id]?.has(tCat));
+      if (elig.length === 0) { idx++; return; }
+      const chosen = elig[idx % elig.length];
+      res[t.id] = chosen.id;
+      (agentCategories[chosen.id] = agentCategories[chosen.id] || new Set()).add(tCat);
+      idx++;
+    });
+    setAssignments((prev) => ({ ...prev, [dayKey]: res }));
+  }
+  function clearAssignments() { setAssignments((prev) => ({ ...prev, [dayKey]: {} })); }
+  function setAssign(tId, aId) { setAssignments((prev) => ({ ...prev, [dayKey]: { ...(prev[dayKey] || {}), [tId]: aId || null } })); }
+
+  // Recap data
+  const agentRecap = {};
+  Object.entries(dayAssign).forEach(([tId, aId]) => {
+    if (!aId) return;
+    const t = team.tournees.find((x) => x.id === tId);
+    if (!t) return;
+    (agentRecap[aId] = agentRecap[aId] || []).push(t);
+  });
+  const assignedAgents = dayPresents.filter((a) => agentRecap[a.id]);
+  const idleAgents = dayPresents.filter((a) => !agentRecap[a.id]);
+  const usedCats = new Set();
+  Object.values(agentRecap).forEach(ts => ts.forEach(t => usedCats.add(t.categoryId || '__none')));
+  const columns = [...cats.filter(c => usedCats.has(c.id)), ...(usedCats.has('__none') ? [{ id: '__none', name: 'Sans prestation', color: '#8E8E93' }] : [])];
+  const violations = new Set();
+  Object.entries(agentRecap).forEach(([aId, ts]) => {
+    const catCount = {};
+    ts.forEach(t => { const c = t.categoryId || '__none'; catCount[c] = (catCount[c] || 0) + 1; });
+    if (Object.values(catCount).some(n => n > 1)) violations.add(aId);
+  });
+
+  function changeDay(delta) {
+    const d = parseD(selDay);
+    d.setDate(d.getDate() + delta);
+    setSelDay(fmt(d));
+  }
+
+  return (
+    <div className="main">
+      {/* Header */}
+      <div style={{ padding: '24px 28px 16px', display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap' }}>
+        <div>
+          <div className="h2">Optimisation</div>
+          <div className="caption" style={{ marginTop: 2, textTransform: 'capitalize' }}>{selLabel}</div>
+        </div>
+        <div style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: 6 }}>
+          <button className="btn btn-secondary btn-icon" onClick={() => changeDay(-1)} title="Jour précédent"><Icon name="chevron-left" size={16} /></button>
+          <input type="date" className="input" style={{ height: 34, width: 160, fontSize: 13 }}
+            value={selDay} onChange={(e) => setSelDay(e.target.value)} />
+          <button className="btn btn-secondary btn-sm" onClick={() => setSelDay(fmt(new Date()))}>Aujourd'hui</button>
+          <button className="btn btn-secondary btn-icon" onClick={() => changeDay(1)} title="Jour suivant"><Icon name="chevron-right" size={16} /></button>
+        </div>
+      </div>
+
+      <div className="scroll-content" style={{ padding: '0 28px 28px' }}>
+        {/* Top: Tournées optimizer card */}
+        <div className="card" style={{ marginBottom: 16, overflow: 'hidden' }}>
+          <div className="card-header">
+            <div className="card-title">Tournées du jour</div>
+            <span className="chip chip-neutral" style={{ marginLeft: 'auto' }}>{covered}/{visibleTournees.length} couvertes</span>
+            <span className="chip chip-info">{dayPresents.length} présents</span>
+          </div>
+
+          {/* Filter bar + actions */}
+          <div style={{ padding: '12px 16px', borderBottom: '1px solid var(--border)', display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap', background: 'var(--surface-2)' }}>
+            <span className="label-sm" style={{ marginRight: 4 }}>Prestation</span>
+            <div style={{ display: 'flex', gap: 4, flexWrap: 'wrap', flex: 1 }}>
+              <button onClick={() => setCatFilter('all')}
+                style={{ padding: '5px 11px', borderRadius: 7, border: `1px solid ${catFilter === 'all' ? 'var(--accent)' : 'var(--border)'}`,
+                  background: catFilter === 'all' ? 'var(--accent)' : 'var(--surface)',
+                  color: catFilter === 'all' ? '#fff' : 'var(--text-2)',
+                  fontFamily: 'inherit', fontSize: 12, fontWeight: 600, cursor: 'pointer', transition: '.15s' }}>
+                Toutes ({team.tournees.length})
+              </button>
+              {cats.map((c) => {
+                const n = team.tournees.filter((t) => t.categoryId === c.id).length;
+                return (
+                  <button key={c.id} onClick={() => setCatFilter(c.id)}
+                    style={{ padding: '5px 11px', borderRadius: 7, border: `1px solid ${catFilter === c.id ? c.color : c.color + '40'}`,
+                      background: catFilter === c.id ? c.color : `${c.color}10`,
+                      color: catFilter === c.id ? '#fff' : c.color,
+                      fontFamily: 'inherit', fontSize: 12, fontWeight: 600, cursor: 'pointer', transition: '.15s', display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+                    <span style={{ width: 7, height: 7, borderRadius: '50%', background: catFilter === c.id ? '#fff' : c.color }}/>
+                    {c.name} ({n})
+                  </button>);
+              })}
+              {noneCount > 0 &&
+                <button onClick={() => setCatFilter('none')}
+                  style={{ padding: '5px 11px', borderRadius: 7, border: `1px solid ${catFilter === 'none' ? 'var(--text-2)' : 'var(--border)'}`,
+                    background: catFilter === 'none' ? 'var(--text-2)' : 'var(--surface)',
+                    color: catFilter === 'none' ? '#fff' : 'var(--text-3)',
+                    fontFamily: 'inherit', fontSize: 12, fontWeight: 600, cursor: 'pointer' }}>
+                  Sans cat. ({noneCount})
+                </button>
+              }
+            </div>
+            <button className="btn btn-secondary btn-sm" onClick={clearAssignments} title="Tout effacer">
+              <Icon name="trash" size={12} /> Effacer
+            </button>
+            <button className="btn btn-primary" onClick={doAutoAssign}
+              title={catFilter === 'all' ? 'Optimiser toutes les tournées' : `Optimiser uniquement: ${catFilter === 'none' ? 'sans catégorie' : cats.find((c) => c.id === catFilter)?.name || ''}`}>
+              <Icon name="zap" size={14} /> Optimiser
+            </button>
+          </div>
+
+          {/* Tournées grid */}
+          <div style={{ padding: '4px 0', maxHeight: 460, overflow: 'auto' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(340px,1fr))', gap: 0 }}>
+              {visibleTournees.map((t) => {
+                const cat = team.categories?.find((c) => c.id === t.categoryId);
+                const aId = dayAssign[t.id];
+                const ag = (team.agents || []).find((a) => a.id === aId);
+                return (
+                  <div key={t.id} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '12px 18px', borderBottom: '1px solid var(--border)', borderRight: '1px solid var(--border)' }}>
+                    <div style={{ width: 40, height: 40, borderRadius: 10, background: cat?.color || 'var(--surface-3)', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 13, fontWeight: 700, flexShrink: 0, opacity: cat ? 1 : .6, fontVariantNumeric: 'tabular-nums' }}>
+                      {tNum(t)}
+                    </div>
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <div style={{ fontSize: 13, fontWeight: 600 }} className="truncate">{t.name}</div>
+                      {cat && <div style={{ fontSize: 11, color: cat.color, marginTop: 1, fontWeight: 500 }}>{cat.name}</div>}
+                    </div>
+                    <select className="input" style={{ height: 34, fontSize: 12, padding: '0 28px 0 10px', minWidth: 130, maxWidth: 150, borderColor: ag ? ag.color : 'var(--border-strong)', color: ag ? ag.color : 'var(--text)', fontWeight: ag ? 600 : 400 }}
+                      value={aId || ''} onChange={(e) => setAssign(t.id, e.target.value || null)}>
+                      <option value="">— Non assigné</option>
+                      {dayPresents.map((a) => <option key={a.id} value={a.id}>{a.name}</option>)}
+                    </select>
+                  </div>);
+              })}
+            </div>
+          </div>
+          <div style={{ padding: '12px 18px', borderTop: '1px solid var(--border)', background: 'var(--surface-2)' }}>
+            {covered === visibleTournees.length && visibleTournees.length > 0 ?
+              <div className="chip chip-success"><Icon name="check" size={12} /> Toutes les tournées sont couvertes</div> :
+              <div className="chip chip-warning">{visibleTournees.length - covered} tournée{visibleTournees.length - covered > 1 ? 's' : ''} non assignée{visibleTournees.length - covered > 1 ? 's' : ''}</div>
+            }
+          </div>
+        </div>
+
+        {/* Recap table */}
+        <div className="card" style={{ overflow: 'hidden' }}>
+          <div className="card-header">
+            <div className="card-title">Récapitulatif des affectations</div>
+            <span className="caption" style={{ marginLeft: 8 }}>Vue par agent · {selDate.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long' })}</span>
+            <span className="chip chip-info" style={{ marginLeft: 'auto' }}>{assignedAgents.length} agent{assignedAgents.length > 1 ? 's' : ''} actif{assignedAgents.length > 1 ? 's' : ''}</span>
+          </div>
+
+          {violations.size > 0 && (
+            <div style={{ padding: '8px 16px', background: 'rgba(255,59,48,0.06)', borderBottom: '1px solid var(--border)', fontSize: 12, color: 'var(--danger)', fontWeight: 500 }}>
+              ⚠ {violations.size} agent{violations.size > 1 ? 's ont' : ' a'} plusieurs tournées d'une même prestation
+            </div>
+          )}
+
+          {assignedAgents.length === 0 ? (
+            <div className="empty" style={{ padding: '40px 20px' }}>
+              <div className="empty-icon">📋</div>
+              <div className="empty-title">Aucune affectation</div>
+              <div className="empty-text">Cliquez sur "Optimiser" pour distribuer automatiquement les tournées, ou affectez manuellement via les menus déroulants.</div>
+            </div>
+          ) : (
+            <div style={{ overflowX: 'auto' }}>
+              <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13 }}>
+                <thead>
+                  <tr style={{ background: 'var(--surface-2)' }}>
+                    <th style={{ padding: '12px 18px', textAlign: 'left', fontWeight: 600, color: 'var(--text-2)', fontSize: 11, textTransform: 'uppercase', letterSpacing: '.5px', position: 'sticky', left: 0, background: 'var(--surface-2)', zIndex: 1, minWidth: 200 }}>Agent</th>
+                    {columns.map((c) => (
+                      <th key={c.id} style={{ padding: '12px 18px', textAlign: 'left', fontWeight: 600, fontSize: 11, textTransform: 'uppercase', letterSpacing: '.5px', color: c.color, minWidth: 140 }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                          <div style={{ width: 8, height: 8, borderRadius: '50%', background: c.color }} />
+                          {c.name}
+                        </div>
+                      </th>
+                    ))}
+                    <th style={{ padding: '12px 18px', textAlign: 'right', fontWeight: 600, color: 'var(--text-2)', fontSize: 11, textTransform: 'uppercase', letterSpacing: '.5px' }}>Total</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {assignedAgents.map((a) => {
+                    const ts = agentRecap[a.id] || [];
+                    const hasViolation = violations.has(a.id);
+                    const grouped = {};
+                    ts.forEach(t => { const c = t.categoryId || '__none'; (grouped[c] = grouped[c] || []).push(t); });
+                    return (
+                      <tr key={a.id} style={{ borderTop: '1px solid var(--border)', background: hasViolation ? 'rgba(255,59,48,0.04)' : 'transparent' }}>
+                        <td style={{ padding: '12px 18px', position: 'sticky', left: 0, background: hasViolation ? 'rgba(255,59,48,0.04)' : 'var(--surface)', zIndex: 1 }}>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                            <Avatar name={a.name} color={a.color} size={32} />
+                            <div>
+                              <div style={{ fontWeight: 600, fontSize: 13 }}>{a.name}</div>
+                              {hasViolation && <div style={{ fontSize: 10, color: 'var(--danger)', fontWeight: 600, marginTop: 1 }}>⚠ Doublon prestation</div>}
+                            </div>
+                          </div>
+                        </td>
+                        {columns.map((c) => {
+                          const ctts = grouped[c.id] || [];
+                          const isDouble = ctts.length > 1;
+                          return (
+                            <td key={c.id} style={{ padding: '12px 18px' }}>
+                              {ctts.length === 0 ? <span style={{ color: 'var(--text-3)' }}>—</span> :
+                                <div style={{ display: 'flex', gap: 5, flexWrap: 'wrap' }}>
+                                  {ctts.map((t) => (
+                                    <span key={t.id} title={t.name}
+                                      style={{ padding: '4px 10px', borderRadius: 7, fontSize: 12, fontWeight: 700,
+                                        background: isDouble ? 'var(--danger)' : c.color, color: '#fff', fontVariantNumeric: 'tabular-nums' }}>
+                                      {tNum(t)}
+                                    </span>
+                                  ))}
+                                </div>
+                              }
+                            </td>
+                          );
+                        })}
+                        <td style={{ padding: '12px 18px', textAlign: 'right', fontWeight: 700, color: 'var(--text)', fontSize: 14 }}>{ts.length}</td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+          )}
+
+          {idleAgents.length > 0 && (
+            <div style={{ padding: '14px 18px', borderTop: '1px solid var(--border)', background: 'var(--surface-2)' }}>
+              <div className="label-sm" style={{ marginBottom: 8 }}>Présents non affectés ({idleAgents.length})</div>
+              <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+                {idleAgents.map(a => (
+                  <span key={a.id} className="chip" style={{ background: `${a.color}15`, color: a.color }}>
+                    <span style={{ width: 6, height: 6, borderRadius: '50%', background: a.color, marginRight: 4 }} />
+                    {a.name}
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ═══ LEAVES VIEW ════════════════════════════════════════════════════════════
+function LeavesView({ team, user, leaveRequests, onRequestLeave, onReviewLeave }) {
+  const [reviewReq, setReviewReq] = useState(null);
+  const [showNewReq, setShowNewReq] = useState(false);
+  const [filter, setFilter] = useState('pending');
+
+  const teamReqs = leaveRequests.filter((r) => r.teamId === team.id);
+  const visible = teamReqs.filter((r) => filter === 'all' || r.status === filter);
+  const counts = {
+    pending: teamReqs.filter((r) => r.status === 'pending').length,
+    approved: teamReqs.filter((r) => r.status === 'approved').length,
+    refused: teamReqs.filter((r) => r.status === 'refused').length,
+    cancelled: teamReqs.filter((r) => r.status === 'cancelled').length
+  };
+
+  return (
+    <div className="main">
+      <div style={{ padding: '24px 28px 16px', display: 'flex', alignItems: 'center', gap: 12 }}>
+        <div>
+          <div className="h2">Congés</div>
+          <div className="caption" style={{ marginTop: 2 }}>Demandes en cours et historique</div>
+        </div>
+        <button className="btn btn-primary" style={{ marginLeft: 'auto' }} onClick={() => setShowNewReq(true)}>
+          <Icon name="plus" size={14} /> Nouvelle demande
+        </button>
+      </div>
+      <div style={{ padding: '0 28px 14px' }}>
+        <div className="segmented">
+          {[['pending', `En attente (${counts.pending})`], ['approved', `Approuvés (${counts.approved})`], ['refused', `Refusés (${counts.refused})`], ['cancelled', `Annulés (${counts.cancelled})`], ['all', 'Tous']].map(([k, l]) =>
+          <button key={k} className={filter === k ? 'active' : ''} onClick={() => setFilter(k)}>{l}</button>
+          )}
+        </div>
+      </div>
+      <div className="scroll-content" style={{ padding: '0 28px 28px' }}>
+        {visible.length === 0 ?
+        <div className="empty">
+            <div className="empty-icon">🌴</div>
+            <div className="empty-title">Aucune demande</div>
+            <div className="empty-text">{filter === 'pending' ? 'Aucune demande en attente de validation.' : 'Rien à afficher dans cette catégorie.'}</div>
+          </div> :
+
+        <div className="card" style={{ maxWidth: 740 }}>
+            {visible.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)).map((req) => {
+            const agent = team.agents.find((a) => a.id === (req.agentId || req.userId));
+            const lt = LEAVE_MAP[req.type] || { label: req.type, color: '#999' };
+            const days = Math.round((parseD(req.dateTo) - parseD(req.dateFrom)) / 86400000) + 1;
+            const statusChipClass = req.status === 'approved' ? 'chip-success' : req.status === 'refused' ? 'chip-danger' : req.status === 'cancelled' ? 'chip-neutral' : 'chip-warning';
+            const statusLabel = req.status === 'approved' ? 'Approuvé' : req.status === 'refused' ? 'Refusé' : req.status === 'cancelled' ? 'Annulé' : 'En attente';
+            return (
+              <div key={req.id} className="list-row clickable"
+              onClick={() => setReviewReq(req)}>
+                  <Avatar name={agent?.name || '?'} color={agent?.color || '#999'} size={40} />
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 3, flexWrap: 'wrap' }}>
+                      <span style={{ fontWeight: 600, fontSize: 14 }}>{agent?.name || 'Agent'}</span>
+                      <span className="chip" style={{ background: `${lt.color}20`, color: lt.color }}>{lt.label}</span>
+                    </div>
+                    <div className="caption">
+                      {parseD(req.dateFrom).toLocaleDateString('fr-FR')} → {parseD(req.dateTo).toLocaleDateString('fr-FR')} · <strong style={{ color: 'var(--accent)' }}>{days}j</strong>
+                    </div>
+                    {req.note && <div style={{ fontSize: 12, color: 'var(--text-2)', marginTop: 4, fontStyle: 'italic' }}>"{req.note}"</div>}
+                  </div>
+                  <span className={`chip ${statusChipClass}`}>{statusLabel}</span>
+                </div>);
+
+          })}
+          </div>
+        }
+      </div>
+      {reviewReq && <ReviewLeaveModal req={reviewReq} agents={team.agents || []} onReview={(id, s, n) => {onReviewLeave(id, s, n);setReviewReq(null);}} onClose={() => setReviewReq(null)} />}
+      {showNewReq && <LeaveRequestModal user={user} team={team} onSave={(req) => {onRequestLeave(req);setShowNewReq(false);}} onClose={() => setShowNewReq(false)} />}
+    </div>);
+
+}
+
+// ═══ AGENTS VIEW ════════════════════════════════════════════════════════════
+function AgentsView({ team, updateTeam, absMap, selDay }) {
+  const [search, setSearch] = useState('');
+  const [statusFilter, setStatusFilter] = useState('all');
+  function updateAgent(id, fn) {updateTeam((t) => ({ ...t, agents: t.agents.map((a) => a.id === id ? fn(a) : a) }));}
+  function addAgent() {
+    const n = team.agents.length;
+    updateTeam((t) => ({ ...t, agents: [...t.agents, { id: mkId(), name: `Agent ${n + 1}`, color: AGENT_COLORS[n % AGENT_COLORS.length], prefEnabled: false, preferred: [], managerial: false }] }));
+  }
+  function removeAgent(id) {if (confirm('Supprimer cet agent ?')) updateTeam((t) => ({ ...t, agents: t.agents.filter((a) => a.id !== id) }));}
+  const q = search.trim().toLowerCase();
+  const today = selDay || fmt(new Date());
+  const todayLabel = parseD(today).toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' });
+  let filteredAgents = q ? team.agents.filter(a => (a.name || '').toLowerCase().includes(q)) : team.agents;
+  if (statusFilter === 'absent') filteredAgents = filteredAgents.filter(a => !!absMap[`${a.id}__${today}`]);
+  if (statusFilter === 'present') filteredAgents = filteredAgents.filter(a => !absMap[`${a.id}__${today}`]);
+  const absentCount = team.agents.filter(a => !!absMap[`${a.id}__${today}`]).length;
+  return (
+    <div className="main">
+      <div style={{ padding: '24px 28px 16px', display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap' }}>
+        <div>
+          <div className="h2">Agents</div>
+          <div className="caption" style={{ marginTop: 2 }}>
+            {q
+              ? `${filteredAgents.length} sur ${team.agents.length} agent${team.agents.length > 1 ? 's' : ''}`
+              : `${team.agents.length} agent${team.agents.length > 1 ? 's' : ''} dans cette équipe`}
+            {absentCount > 0 && <span style={{ marginLeft: 8, color: 'var(--danger)', fontWeight: 600 }}>· {absentCount} absent{absentCount > 1 ? 's' : ''} aujourd'hui</span>}
+          </div>
+        </div>
+        <div style={{ position: 'relative', flex: 1, maxWidth: 320, marginLeft: 'auto' }}>
+          <div style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', color: 'var(--text-3)', display: 'flex', alignItems: 'center', pointerEvents: 'none' }}>
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+              <circle cx="11" cy="11" r="7" /><line x1="21" y1="21" x2="16.65" y2="16.65" />
+            </svg>
+          </div>
+          <input className="input" placeholder="Rechercher un agent…" value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            style={{ paddingLeft: 36, paddingRight: search ? 32 : 12 }} />
+          {search &&
+            <button onClick={() => setSearch('')}
+              style={{ position: 'absolute', right: 6, top: '50%', transform: 'translateY(-50%)', background: 'var(--surface-2)', border: 'none', borderRadius: '50%', width: 22, height: 22, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-2)' }}>
+              <Icon name="x" size={12} />
+            </button>
+          }
+        </div>
+        <button className="btn btn-primary" onClick={addAgent}>
+          <Icon name="plus" size={14} /> Ajouter
+        </button>
+      </div>
+      <div style={{ padding: '0 28px 14px', display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}>
+        <div className="segmented">
+          {[['all', `Tous (${team.agents.length})`], ['present', `Présents (${team.agents.length - absentCount})`], ['absent', `Absents (${absentCount})`]].map(([k, l]) =>
+            <button key={k} className={statusFilter === k ? 'active' : ''} onClick={() => setStatusFilter(k)}>{l}</button>
+          )}
+        </div>
+        <div className="caption" style={{ textTransform: 'capitalize' }}>État au {todayLabel}</div>
+      </div>
+      <div className="scroll-content" style={{ padding: '0 28px 28px' }}>
+        {filteredAgents.length === 0 ?
+          <div className="empty">
+            <div className="empty-icon">{statusFilter === 'absent' ? '✅' : '🔍'}</div>
+            <div className="empty-title">{statusFilter === 'absent' ? 'Aucun absent' : 'Aucun agent trouvé'}</div>
+            <div className="empty-text">{statusFilter === 'absent' ? 'Tous les agents sont présents aujourd\'hui.' : q ? `Aucun agent ne correspond à « ${search} ».` : 'Ajoutez un agent pour commencer.'}</div>
+          </div> :
+
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(300px,1fr))', gap: 12 }}>
+            {filteredAgents.map((agent) => {
+              const abs = absMap[`${agent.id}__${today}`];
+              const at = abs ? ABS_MAP[abs.type] : null;
+              return <AgentCardWrap key={agent.id} agent={agent} abs={abs} at={at} updateAgent={updateAgent} removeAgent={removeAgent} team={team} />;
+            })}
+          </div>
+        }
+      </div>
+    </div>);
+}
+
+function AgentCardWrap({ agent, abs, at, updateAgent, removeAgent, team }) {
+  return (
+    <div className="card card-hover card-padded" style={{ position: 'relative', borderColor: abs ? `${at.color}55` : undefined, boxShadow: abs ? `0 0 0 1.5px ${at.color}30, var(--shadow)` : undefined, overflow: 'hidden' }}>
+      {abs && (
+        <div style={{
+          position: 'absolute', top: 0, left: 0, right: 0,
+          padding: '6px 14px',
+          background: `linear-gradient(90deg, ${at.color}22 0%, ${at.color}11 100%)`,
+          borderBottom: `1px solid ${at.color}40`,
+          fontSize: 11, fontWeight: 700, color: at.color, letterSpacing: '.3px',
+          display: 'flex', alignItems: 'center', gap: 6
+        }}>
+          <span style={{ width: 7, height: 7, borderRadius: '50%', background: at.color, boxShadow: `0 0 0 2px ${at.color}33` }} />
+          ABSENT · {at.label.toUpperCase()}
+          <span style={{ marginLeft: 'auto', fontSize: 10, opacity: .7, fontWeight: 500 }}>
+            {parseD(abs.dateFrom).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' })}
+            {abs.dateFrom !== abs.dateTo ? ` → ${parseD(abs.dateTo).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' })}` : ''}
+          </span>
+        </div>
+      )}
+      <div style={{ display: 'flex', alignItems: 'flex-start', gap: 12, marginBottom: 14, marginTop: abs ? 22 : 0 }}>
+        <div style={{ position: 'relative', flexShrink: 0 }}>
+          <Avatar name={agent.name} color={agent.color} size={44} />
+          {abs && <span style={{ position: 'absolute', bottom: -2, right: -2, width: 16, height: 16, borderRadius: '50%', background: at.color, border: '2.5px solid var(--surface)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" /></svg>
+          </span>}
+        </div>
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <input value={agent.name} onChange={(e) => updateAgent(agent.id, (a) => ({ ...a, name: e.target.value }))}
+            style={{ background: 'transparent', border: 'none', padding: 0, fontSize: 15, fontWeight: 600, color: 'var(--text)', width: '100%', outline: 'none', borderBottom: '1.5px solid transparent', transition: '.15s' }}
+            onFocus={(e) => e.target.style.borderBottomColor = 'var(--accent)'}
+            onBlur={(e) => e.target.style.borderBottomColor = 'transparent'} />
+          <div className="caption" style={{ marginTop: 2 }}>
+            {abs ? <span style={{ color: at.color, fontWeight: 600 }}>Non affectable aujourd'hui</span> : 'Agent de distribution'}
+          </div>
+        </div>
+        <button onClick={() => removeAgent(agent.id)} className="btn btn-ghost btn-icon btn-sm" style={{ color: 'var(--text-3)' }}><Icon name="trash" size={14} /></button>
+      </div>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 8, paddingTop: 12, borderTop: '1px solid var(--border)' }}>
+        <div style={{ flex: 1 }}>
+          <div style={{ fontSize: 13, fontWeight: 500 }}>Tournées préférentielles</div>
+          <div className="caption" style={{ marginTop: 1 }}>{agent.prefEnabled ? `${(agent.preferred || []).length} sélectionnée${(agent.preferred || []).length > 1 ? 's' : ''}` : 'Toutes autorisées'}</div>
+        </div>
+        <div className={`toggle${agent.prefEnabled ? ' on' : ''}`} onClick={() => updateAgent(agent.id, (a) => ({ ...a, prefEnabled: !a.prefEnabled }))} />
+      </div>
+      {agent.prefEnabled &&
+        <div style={{ marginTop: 10 }}>
+          {team.tournees.length === 0 && <div className="caption">Aucune tournée — créez-en dans la rubrique Tournées</div>}
+          {team.tournees.length > 0 &&
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4, maxHeight: 130, overflowY: 'auto', paddingRight: 4 }}>
+              {team.tournees.map((t) => {
+                const on = (agent.preferred || []).includes(t.id);
+                const cat = (team.categories || []).find((c) => c.id === t.categoryId);
+                return (
+                  <button key={t.id}
+                    onClick={() => updateAgent(agent.id, (a) => ({ ...a, preferred: on ? a.preferred.filter((x) => x !== t.id) : [...(a.preferred || []), t.id] }))}
+                    title={cat ? `${t.name} · ${cat.name}` : t.name}
+                    style={{ display: 'inline-flex', alignItems: 'center', gap: 5, padding: '4px 8px', borderRadius: 7, border: '1px solid', fontSize: 11, fontWeight: 600, cursor: 'pointer',
+                      background: on ? cat?.color || 'var(--accent)' : 'var(--surface)',
+                      borderColor: on ? cat?.color || 'var(--accent)' : 'var(--border)',
+                      color: on ? '#fff' : cat?.color || 'var(--text-2)',
+                      transition: '.15s', fontFamily: 'inherit' }}>
+                    <span style={{ fontVariantNumeric: 'tabular-nums' }}>{tNum(t)}</span>
+                    {(() => {
+                      const cleaned = (t.name || '').replace(/^\s*(tournée|tournee)?\s*\d+\s*[-–:.]?\s*/i, '').trim();
+                      if (!cleaned || cleaned === tNum(t)) return null;
+                      return <span className="truncate" style={{ maxWidth: 110 }}>{cleaned}</span>;
+                    })()}
+                  </button>);
+              })}
+            </div>
+          }
+          {(agent.preferred || []).length > 0 &&
+            <div style={{ display: 'flex', gap: 6, marginTop: 8, flexWrap: 'wrap' }}>
+              <button onClick={() => updateAgent(agent.id, (a) => ({ ...a, preferred: team.tournees.map((t) => t.id) }))}
+                style={{ padding: '3px 8px', borderRadius: 6, border: '1px solid var(--border)', background: 'var(--surface)', color: 'var(--text-2)', fontSize: 11, fontWeight: 500, fontFamily: 'inherit', cursor: 'pointer' }}>
+                Tout sélectionner
+              </button>
+              <button onClick={() => updateAgent(agent.id, (a) => ({ ...a, preferred: [] }))}
+                style={{ padding: '3px 8px', borderRadius: 6, border: '1px solid var(--border)', background: 'var(--surface)', color: 'var(--text-2)', fontSize: 11, fontWeight: 500, fontFamily: 'inherit', cursor: 'pointer' }}>
+                Vider
+              </button>
+              {(team.categories || []).map((c) =>
+                <button key={c.id}
+                  onClick={() => {
+                    const catTs = team.tournees.filter((t) => t.categoryId === c.id).map((t) => t.id);
+                    updateAgent(agent.id, (a) => {
+                      const set = new Set(a.preferred || []);
+                      catTs.forEach((id) => set.add(id));
+                      return { ...a, preferred: [...set] };
+                    });
+                  }}
+                  style={{ padding: '3px 8px', borderRadius: 6, border: `1px solid ${c.color}40`, background: `${c.color}10`, color: c.color, fontSize: 11, fontWeight: 500, fontFamily: 'inherit', cursor: 'pointer' }}>
+                  + {c.name}
+                </button>
+              )}
+            </div>
+          }
+        </div>
+      }
+      <div style={{ display: 'flex', alignItems: 'center', gap: 8, paddingTop: 12, marginTop: 12, borderTop: '1px solid var(--border)' }}>
+        <div style={{ flex: 1 }}>
+          <div style={{ fontSize: 13, fontWeight: 500 }}>Rôle managérial</div>
+          <div className="caption" style={{ marginTop: 1 }}>{agent.managerial ? 'Reste au bureau' : 'En tournée'}</div>
+        </div>
+        <div className={`toggle${agent.managerial ? ' on' : ''}`} onClick={() => updateAgent(agent.id, (a) => ({ ...a, managerial: !a.managerial }))} />
+      </div>
+    </div>
+  );
+}
+
+// ═══ TOURNEES VIEW ══════════════════════════════════════════════════════════
+function TourneesView({ team, updateTeam }) {
+  const [catModal, setCatModal] = useState(null);
+  const [filter, setFilter] = useState(null);
+
+  function updateTournee(id, fn) {updateTeam((t) => ({ ...t, tournees: t.tournees.map((tt) => tt.id === id ? fn(tt) : tt) }));}
+  function addTournee() {updateTeam((t) => {const n = t.tournees.length + 1;return { ...t, tournees: [...t.tournees, { id: mkId(), name: `Tournée ${String(n).padStart(2, '0')}`, color: T_COLORS[n % T_COLORS.length], num: n, categoryId: filter }] };});}
+  function removeTournee(id) {if (confirm('Supprimer cette tournée ?')) updateTeam((t) => ({ ...t, tournees: t.tournees.filter((tt) => tt.id !== id) }));}
+  function saveCategory(cat) {updateTeam((t) => {const cats = t.categories || [];const exists = cats.find((c) => c.id === cat.id);return { ...t, categories: exists ? cats.map((c) => c.id === cat.id ? cat : c) : [...cats, cat] };});setCatModal(null);}
+  function removeCat(id) {if (!confirm('Supprimer cette catégorie ?')) return;updateTeam((t) => ({ ...t, categories: (t.categories || []).filter((c) => c.id !== id), tournees: t.tournees.map((tt) => tt.categoryId === id ? { ...tt, categoryId: null } : tt) }));}
+
+  const visible = filter ? team.tournees.filter((t) => t.categoryId === filter) : team.tournees;
+
+  return (
+    <div className="main">
+      <div style={{ padding: '24px 28px 16px', display: 'flex', alignItems: 'center', gap: 12 }}>
+        <div>
+          <div className="h2">Tournées</div>
+          <div className="caption" style={{ marginTop: 2 }}>{team.tournees.length} tournées · {(team.categories || []).length} catégorie{(team.categories || []).length > 1 ? 's' : ''}</div>
+        </div>
+        <button className="btn btn-secondary" onClick={() => setCatModal({ cat: null })} style={{ marginLeft: 'auto' }}>
+          <Icon name="plus" size={14} /> Catégorie
+        </button>
+        <button className="btn btn-primary" onClick={addTournee}>
+          <Icon name="plus" size={14} /> Tournée
+        </button>
+      </div>
+
+      {/* Category filter */}
+      <div style={{ padding: '0 28px 14px', display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+        <button className={`btn btn-sm${!filter ? ' btn-primary' : ' btn-secondary'}`} onClick={() => setFilter(null)}>Toutes ({team.tournees.length})</button>
+        {(team.categories || []).map((c) =>
+        <div key={c.id} style={{ display: 'inline-flex', alignItems: 'center', height: 28, borderRadius: 7, overflow: 'hidden', background: filter === c.id ? c.color : 'var(--surface-2)', border: '1px solid var(--border)' }}>
+            <button style={{ height: 28, padding: '0 10px', background: 'transparent', border: 'none', cursor: 'pointer', color: filter === c.id ? '#fff' : c.color, fontSize: 12, fontWeight: 600, fontFamily: 'inherit' }}
+          onClick={() => setFilter(filter === c.id ? null : c.id)}>{c.name} ({team.tournees.filter((t) => t.categoryId === c.id).length})</button>
+            <button style={{ height: 28, padding: '0 7px', background: 'transparent', border: 'none', cursor: 'pointer', color: filter === c.id ? '#fff' : 'var(--text-2)', fontSize: 12, fontFamily: 'inherit' }}
+          onClick={() => setCatModal({ cat: c })}><Icon name="edit" size={12} /></button>
+            <button style={{ height: 28, padding: '0 7px', background: 'transparent', border: 'none', cursor: 'pointer', color: filter === c.id ? '#fff' : 'var(--text-2)', fontSize: 12, fontFamily: 'inherit' }}
+          onClick={() => removeCat(c.id)}><Icon name="x" size={12} /></button>
+          </div>
+        )}
+      </div>
+
+      <div className="scroll-content" style={{ padding: '0 28px 28px' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(240px,1fr))', gap: 10 }}>
+          {visible.map((t) => {
+            const cat = (team.categories || []).find((c) => c.id === t.categoryId);
+            return (
+              <div key={t.id} className="card card-hover" style={{ padding: '12px 14px', display: 'flex', alignItems: 'center', gap: 10 }}>
+                <input value={t.code || ''}
+                placeholder={String(t.num).padStart(2, '0')}
+                onChange={(e) => updateTournee(t.id, (tt) => ({ ...tt, code: e.target.value }))}
+                title="Numéro de tournée (modifiable)"
+                style={{ width: 56, height: 36, borderRadius: 9, background: cat?.color || 'var(--surface-3)', color: '#fff', textAlign: 'center', fontSize: 12, fontWeight: 700, flexShrink: 0, opacity: cat ? 1 : .6, border: 'none', outline: 'none', fontFamily: 'inherit', padding: 0 }} />
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <input value={t.name} onChange={(e) => updateTournee(t.id, (tt) => ({ ...tt, name: e.target.value }))}
+                  style={{ background: 'transparent', border: 'none', padding: 0, fontSize: 13, fontWeight: 500, color: 'var(--text)', width: '100%', outline: 'none', borderBottom: '1.5px solid transparent', transition: '.15s' }}
+                  onFocus={(e) => e.target.style.borderBottomColor = 'var(--accent)'}
+                  onBlur={(e) => e.target.style.borderBottomColor = 'transparent'} />
+                  <select value={t.categoryId || ''} onChange={(e) => updateTournee(t.id, (tt) => ({ ...tt, categoryId: e.target.value || null }))}
+                  style={{ background: 'transparent', border: 'none', padding: 0, fontSize: 11, color: cat ? cat.color : 'var(--text-3)', cursor: 'pointer', marginTop: 2, outline: 'none', fontFamily: 'inherit' }}>
+                    <option value="">Sans catégorie</option>
+                    {(team.categories || []).map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
+                  </select>
+                </div>
+                <button onClick={() => removeTournee(t.id)} className="btn btn-ghost btn-icon btn-sm" style={{ color: 'var(--text-3)' }}><Icon name="trash" size={14} /></button>
+              </div>);
+
+          })}
+        </div>
+      </div>
+      {catModal && <CategoryModal category={catModal.cat} onSave={saveCategory} onClose={() => setCatModal(null)} />}
+    </div>);
+
+}
+
+// ═══ DASHBOARD VIEW ══════════════════════════════════════════════════════════
+function DashboardView({ team, absMap, leaveRequests, year, month, assignments, setYear, setMonth, selDay, setSelDay }) {
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
+  const agents = team.agents || [];
+  const absByType = {};
+  ABSENCE_TYPES.forEach((t) => {absByType[t.code] = 0;});
+  for (let d = 1; d <= daysInMonth; d++) {
+    const ds = `${year}-${String(month + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+    agents.forEach((a) => {const abs = absMap[`${a.id}__${ds}`];if (abs) absByType[abs.type] = (absByType[abs.type] || 0) + 1;});
+  }
+  const agentAbsCount = agents.map((a) => {
+    let n = 0;
+    for (let d = 1; d <= daysInMonth; d++) {const ds = `${year}-${String(month + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;if (absMap[`${a.id}__${ds}`]) n++;}
+    return { agent: a, count: n };
+  }).sort((a, b) => b.count - a.count);
+  let totalCovered = 0,totalPossible = 0;
+  for (let d = 1; d <= daysInMonth; d++) {
+    const ds = `${year}-${String(month + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+    const dow = new Date(year, month, d).getDay();
+    if (dow === 0 || dow === 6) continue;
+    totalPossible++;
+    const da = assignments[`${team.id}__${ds}`] || {};
+    if (Object.values(da).some(Boolean)) totalCovered++;
+  }
+  const pendingLeaves = leaveRequests.filter((r) => r.teamId === team.id && r.status === 'pending').length;
+  const totalAbs = Object.values(absByType).reduce((a, b) => a + b, 0);
+  const workDays = Array.from({ length: daysInMonth }, (_, i) => {const d = new Date(year, month, i + 1);return d.getDay() !== 0 && d.getDay() !== 6;}).filter(Boolean).length;
+  const presRate = agents.length && workDays ? Math.round(100 - totalAbs / (agents.length * workDays) * 100) : 100;
+  const covRate = totalPossible ? Math.round(totalCovered / totalPossible * 100) : 0;
+
+  function prevMonth() {if (month === 0) {setMonth(11);setYear((y) => y - 1);} else setMonth((m) => m - 1);}
+  function nextMonth() {if (month === 11) {setMonth(0);setYear((y) => y + 1);} else setMonth((m) => m + 1);}
+
+  return (
+    <div className="main">
+      <div style={{ padding: '24px 28px 16px', display: 'flex', alignItems: 'center', gap: 12 }}>
+        <div>
+          <div className="h2">Tableau de bord</div>
+          <div className="caption" style={{ marginTop: 2 }}>{FR_MONTHS[month]} {year}</div>
+        </div>
+        <div style={{ marginLeft: 'auto', display: 'flex', gap: 6 }}>
+          <button className="btn btn-secondary btn-icon" onClick={prevMonth}><Icon name="chevron-left" size={16} /></button>
+          <button className="btn btn-secondary btn-icon" onClick={nextMonth}><Icon name="chevron-right" size={16} /></button>
+        </div>
+      </div>
+      <div className="scroll-content" style={{ padding: '0 28px 28px' }}>
+        {/* Affectations du jour */}
+        {(() => {
+          const dayKey = `${team.id}__${selDay}`;
+          const dayAssign = assignments[dayKey] || {};
+          const cats = team.categories || [];
+          const presentAgents = (team.agents || []).filter((a) => !absMap[`${a.id}__${selDay}`]);
+          const absent = (team.agents || []).filter((a) => !!absMap[`${a.id}__${selDay}`]);
+          // Build map: agentId → { categoryId → [tournée] }
+          const agentMap = {};
+          Object.entries(dayAssign).forEach(([tId, aId]) => {
+            if (!aId) return;
+            const t = team.tournees.find((x) => x.id === tId);
+            if (!t) return;
+            const cat = t.categoryId || '__none';
+            agentMap[aId] = agentMap[aId] || {};
+            (agentMap[aId][cat] = agentMap[aId][cat] || []).push(t);
+          });
+          const assignedAgentIds = Object.keys(agentMap);
+          const totalAssigned = Object.values(dayAssign).filter(Boolean).length;
+          const selLabel = parseD(selDay).toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' });
+          // Detect doublons
+          const violations = new Set();
+          Object.entries(agentMap).forEach(([aId, catMap]) => {
+            Object.values(catMap).forEach((arr) => {if (arr.length > 1) violations.add(aId);});
+          });
+          // Column headers: categories with assigned tournées + "Sans prestation"
+          const usedCatIds = new Set();
+          Object.values(agentMap).forEach((catMap) => Object.keys(catMap).forEach((c) => usedCatIds.add(c)));
+          const columns = [...cats.filter((c) => usedCatIds.has(c.id)), ...(usedCatIds.has('__none') ? [{ id: '__none', name: 'Sans prestation', color: '#8E8E93' }] : [])];
+
+          return (
+            <div className="card" style={{ marginBottom: 16, overflow: 'hidden' }}>
+              <div className="card-header">
+                <div>
+                  <div className="card-title">Affectations du jour</div>
+                  <div className="caption" style={{ marginTop: 2, textTransform: 'capitalize' }}>{selLabel}</div>
+                </div>
+                <input type="date" className="input" style={{ height: 32, marginLeft: 'auto', width: 160, fontSize: 13 }}
+                value={selDay} onChange={(e) => setSelDay(e.target.value)} />
+                <span className="chip chip-info">{totalAssigned}/{team.tournees.length} tournées</span>
+              </div>
+              {assignedAgentIds.length === 0 ?
+              <div className="empty" style={{ padding: '30px 20px' }}>
+                  <div className="empty-icon">📋</div>
+                  <div className="empty-title">Aucune affectation</div>
+                  <div className="empty-text">Aucune tournée n'a encore été assignée pour ce jour.</div>
+                </div> :
+
+              <div style={{ overflow: 'auto' }}>
+                  <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13 }}>
+                    <thead>
+                      <tr style={{ background: 'var(--surface-2)' }}>
+                        <th style={{ padding: '10px 14px', textAlign: 'left', fontWeight: 600, color: 'var(--text-2)', fontSize: 11, textTransform: 'uppercase', letterSpacing: '.5px', position: 'sticky', left: 0, background: 'var(--surface-2)', zIndex: 1, minWidth: 160 }}>Agent</th>
+                        {columns.map((c) =>
+                      <th key={c.id} style={{ padding: '10px 14px', textAlign: 'left', fontWeight: 600, fontSize: 11, textTransform: 'uppercase', letterSpacing: '.5px', color: c.color, minWidth: 120 }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
+                              <div style={{ width: 8, height: 8, borderRadius: '50%', background: c.color }} />
+                              {c.name}
+                            </div>
+                          </th>
+                      )}
+                        <th style={{ padding: '10px 14px', textAlign: 'right', fontWeight: 600, color: 'var(--text-2)', fontSize: 11, textTransform: 'uppercase', letterSpacing: '.5px' }}>Total</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {presentAgents.map((a) => {
+                      const catMap = agentMap[a.id] || {};
+                      const total = Object.values(catMap).reduce((s, arr) => s + arr.length, 0);
+                      const hasViolation = violations.has(a.id);
+                      if (total === 0) return null;
+                      return (
+                        <tr key={a.id} style={{ borderTop: '1px solid var(--border)', background: hasViolation ? 'rgba(255,59,48,0.04)' : 'transparent' }}>
+                            <td style={{ padding: '10px 14px', position: 'sticky', left: 0, background: hasViolation ? 'rgba(255,59,48,0.04)' : 'var(--surface)', zIndex: 1 }}>
+                              <div style={{ display: 'flex', alignItems: 'center', gap: 9 }}>
+                                <Avatar name={a.name} color={a.color} size={28} />
+                                <div>
+                                  <div style={{ fontWeight: 600, fontSize: 13 }}>{a.name}</div>
+                                  {hasViolation && <div style={{ fontSize: 10, color: 'var(--danger)', fontWeight: 600, marginTop: 1 }}>⚠ Doublon prestation</div>}
+                                </div>
+                              </div>
+                            </td>
+                            {columns.map((c) => {
+                            const ts = catMap[c.id] || [];
+                            const isDouble = ts.length > 1;
+                            return (
+                              <td key={c.id} style={{ padding: '10px 14px' }}>
+                                  {ts.length === 0 ? <span style={{ color: 'var(--text-3)' }}>—</span> :
+                                <div style={{ display: 'flex', gap: 4, flexWrap: 'wrap' }}>
+                                      {ts.map((t) =>
+                                  <span key={t.id} title={t.name}
+                                  style={{ padding: '3px 8px', borderRadius: 6, fontSize: 11, fontWeight: 700,
+                                    background: isDouble ? `var(--danger)` : c.color, color: '#fff', fontVariantNumeric: 'tabular-nums' }}>
+                                          {tNum(t)}
+                                        </span>
+                                  )}
+                                    </div>
+                                }
+                                </td>);
+
+                          })}
+                            <td style={{ padding: '10px 14px', textAlign: 'right', fontWeight: 600, color: 'var(--text-2)', fontSize: 13 }}>{total}</td>
+                          </tr>);
+
+                    })}
+                    </tbody>
+                  </table>
+                </div>
+              }
+              {(presentAgents.filter((a) => !agentMap[a.id]).length > 0 || absent.length > 0) &&
+              <div style={{ padding: '12px 16px', borderTop: '1px solid var(--border)', background: 'var(--surface-2)', display: 'flex', gap: 14, flexWrap: 'wrap', fontSize: 12 }}>
+                  {presentAgents.filter((a) => !agentMap[a.id]).length > 0 &&
+                <div style={{ flex: 1, minWidth: 200 }}>
+                      <div className="label-sm" style={{ marginBottom: 5 }}>Présents non affectés</div>
+                      <div style={{ display: 'flex', gap: 4, flexWrap: 'wrap' }}>
+                        {presentAgents.filter((a) => !agentMap[a.id]).map((a) =>
+                    <span key={a.id} className="chip" style={{ background: `${a.color}15`, color: a.color }}>{a.name}</span>
+                    )}
+                      </div>
+                    </div>
+                }
+                  {absent.length > 0 &&
+                <div style={{ flex: 1, minWidth: 200 }}>
+                      <div className="label-sm" style={{ marginBottom: 5 }}>Absents</div>
+                      <div style={{ display: 'flex', gap: 4, flexWrap: 'wrap' }}>
+                        {absent.map((a) => {
+                      const abs = absMap[`${a.id}__${selDay}`];
+                      const at = ABS_MAP[abs.type];
+                      return (
+                        <span key={a.id} className="chip" style={{ background: `${at.color}15`, color: at.color }}>
+                              {a.name} · {abs.type}
+                            </span>);
+
+                    })}
+                      </div>
+                    </div>
+                }
+                </div>
+              }
+            </div>);
+
+        })()}
+
+        {/* KPI grid */}
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(220px,1fr))', gap: 12, marginBottom: 16 }}>
+          {[
+          { label: 'Taux de présence', val: `${presRate}%`, sub: 'sur jours ouvrés', color: 'var(--success)' },
+          { label: 'Absences totales', val: totalAbs, sub: 'jours · mois', color: 'var(--warning)' },
+          { label: 'Congés en attente', val: pendingLeaves, sub: 'à valider', color: 'var(--accent)' },
+          { label: 'Tournées couvertes', val: `${covRate}%`, sub: `${totalCovered}/${totalPossible} jours`, color: 'var(--text)' }].
+          map((k) =>
+          <div key={k.label} className="card card-padded">
+              <div className="caption" style={{ fontWeight: 500 }}>{k.label}</div>
+              <div style={{ fontSize: 32, fontWeight: 700, letterSpacing: '-0.02em', color: k.color, margin: '8px 0 4px' }}>{k.val}</div>
+              <div className="caption" style={{ fontSize: 11 }}>{k.sub}</div>
+            </div>
+          )}
+        </div>
+
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+          {/* By type */}
+          <div className="card card-padded">
+            <div className="h4" style={{ marginBottom: 14 }}>Absences par type</div>
+            {ABSENCE_TYPES.filter((t) => absByType[t.code] > 0).sort((a, b) => absByType[b.code] - absByType[a.code]).map((t) => {
+              const n = absByType[t.code];
+              const max = Math.max(...Object.values(absByType)) || 1;
+              return (
+                <div key={t.code} style={{ marginBottom: 10 }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 5, fontSize: 13 }}>
+                    <span style={{ fontWeight: 500, color: t.color }}>{t.label}</span>
+                    <span style={{ color: 'var(--text-2)', fontWeight: 500 }}>{n}j</span>
+                  </div>
+                  <div className="progress"><div className="progress-fill" style={{ width: `${n / max * 100}%`, background: t.color }} /></div>
+                </div>);
+
+            })}
+            {totalAbs === 0 && <div className="caption">Aucune absence ce mois</div>}
+          </div>
+          {/* By agent */}
+          <div className="card card-padded">
+            <div className="h4" style={{ marginBottom: 14 }}>Absences par agent</div>
+            {agentAbsCount.filter((x) => x.count > 0).slice(0, 8).map(({ agent, count }) =>
+            <div key={agent.id} style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 10 }}>
+                <Avatar name={agent.name} color={agent.color} size={28} />
+                <span className="truncate" style={{ flex: 1, fontSize: 13, fontWeight: 500 }}>{agent.name}</span>
+                <div className="progress" style={{ flex: 1.5, maxWidth: 130 }}><div className="progress-fill" style={{ width: `${Math.min(100, count / workDays * 100)}%`, background: agent.color }} /></div>
+                <span style={{ fontSize: 12, color: 'var(--text-2)', fontWeight: 500, minWidth: 24, textAlign: 'right' }}>{count}j</span>
+              </div>
+            )}
+            {agentAbsCount.every((x) => x.count === 0) && <div className="caption">Tous les agents présents</div>}
+          </div>
+        </div>
+      </div>
+    </div>);
+
+}
+
+// ═══ SETTINGS VIEW ══════════════════════════════════════════════════════════
+function SettingsView({ user, team, updateTeam, onImport, onCreateTeam, onJoinTeam, theme, setTheme, accentColor, setAccentColor, liquidGlass, setLiquidGlass, setUser, onDeleteTeam, canDeleteTeam, onLogout }) {
+  const [showTeamSettings, setShowTeamSettings] = useState(false);
+  const [editName, setEditName] = useState(user.name);
+  const [editEmail, setEditEmail] = useState(user.email);
+  const [saved, setSaved] = useState(false);
+  const [density, setDensity] = useState(() => localStorage.getItem('lp4_density') || 'normal');
+  const [firstDay, setFirstDay] = useState(() => localStorage.getItem('lp4_firstDay') || 'monday');
+  const [notifLeave, setNotifLeave] = useState(() => localStorage.getItem('lp4_notifLeave') !== 'false');
+  const [notifAbsence, setNotifAbsence] = useState(() => localStorage.getItem('lp4_notifAbsence') !== 'false');
+  const [copied, setCopied] = useState(false);
+
+  function saveProfile() {
+    setUser({ ...user, name: editName, email: editEmail });
+    setSaved(true);setTimeout(() => setSaved(false), 2500);
+  }
+  function copyCode() {navigator.clipboard?.writeText(team.code).then(() => {setCopied(true);setTimeout(() => setCopied(false), 2000);});}
+
+  const Section = ({ title, children }) =>
+  <div style={{ marginBottom: 14 }}>
+      <div className="label-sm" style={{ marginBottom: 8, padding: '0 4px' }}>{title}</div>
+      <div className="card">{children}</div>
+    </div>;
+
+  const Row = ({ label, sub, right, border = true }) =>
+  <div className="list-row" style={{ padding: '14px 18px', borderBottom: border ? '1px solid var(--border)' : 'none' }}>
+      <div style={{ flex: 1 }}>
+        <div style={{ fontSize: 14, fontWeight: 500 }}>{label}</div>
+        {sub && <div className="caption" style={{ marginTop: 2 }}>{sub}</div>}
+      </div>
+      {right}
+    </div>;
+
+
+  return (
+    <div className="main">
+      <div style={{ padding: '24px 28px 16px' }}>
+        <div className="h2">Paramètres</div>
+        <div className="caption" style={{ marginTop: 2 }}>Personnalisez votre espace de travail</div>
+      </div>
+      <div className="scroll-content" style={{ padding: '4px 28px 28px', maxWidth: 780 }}>
+        {/* Profile */}
+        <Section title="Profil">
+          <div style={{ padding: '18px 20px', display: 'flex', alignItems: 'center', gap: 14, borderBottom: '1px solid var(--border)' }}>
+            <Avatar name={editName} color={accentColor} size={56} />
+            <div style={{ flex: 1 }}>
+              <div style={{ fontSize: 16, fontWeight: 600 }}>{user.name}</div>
+              <div className="caption">{user.email}</div>
+            </div>
+          </div>
+          <div style={{ padding: '16px 20px' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginBottom: 12 }}>
+              <div><label className="field-label">Nom</label><input className="input" value={editName} onChange={(e) => setEditName(e.target.value)} /></div>
+              <div><label className="field-label">Email</label><input className="input" value={editEmail} onChange={(e) => setEditEmail(e.target.value)} /></div>
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+              <button className="btn btn-primary" onClick={saveProfile}>Enregistrer</button>
+              {saved && <span className="chip chip-success"><Icon name="check" size={11} /> Enregistré</span>}
+            </div>
+            <div style={{ marginTop: 18, display: 'flex', justifyContent: 'flex-end' }}>
+              <button className="btn btn-ghost btn-sm" style={{ color: '#D92B2B' }} onClick={onLogout}>Se déconnecter</button>
+            </div>
+          </div>
+        </Section>
+
+        {/* Appearance */}
+        <Section title="Apparence">
+          <div style={{ padding: '14px 20px', borderBottom: '1px solid var(--border)' }}>
+            <div style={{ fontSize: 14, fontWeight: 500, marginBottom: 10 }}>Thème</div>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
+              {[
+              { id: 'light', label: 'Clair', icon: 'sun' },
+              { id: 'dark', label: 'Sombre', icon: 'moon' }].
+              map((t) =>
+              <button key={t.id} onClick={() => setTheme(t.id)}
+              style={{ padding: 16, borderRadius: 12, border: `2px solid ${theme === t.id ? 'var(--accent)' : 'var(--border)'}`, background: theme === t.id ? 'var(--accent-soft)' : 'var(--surface)', cursor: 'pointer', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6, fontFamily: 'inherit', transition: '.15s', color: 'var(--text)' }}>
+                  <Icon name={t.icon} size={24} />
+                  <span style={{ fontSize: 13, fontWeight: 600, color: theme === t.id ? 'var(--accent)' : 'var(--text)' }}>{t.label}</span>
+                </button>
+              )}
+            </div>
+          </div>
+          <Row label="Couleur d'accent" sub="Personnalisez la couleur principale" right={
+          <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', maxWidth: 200, justifyContent: 'flex-end' }}>
+              {ACCENT_COLORS.map((c) =>
+            <div key={c} className={`swatch${accentColor === c ? ' selected' : ''}`} style={{ background: c, width: 22, height: 22 }} onClick={() => setAccentColor(c)} />
+            )}
+            </div>
+          } />
+          <Row label="Effet Liquid Glass" sub="Teinte translucide sur toute l'interface avec la couleur d'accent" right={
+          <div className={`toggle${liquidGlass ? ' on' : ''}`} onClick={() => setLiquidGlass((v) => !v)} />
+          } />
+          <Row label="Densité d'affichage" sub="Espacement entre les éléments" border={false} right={
+          <div className="segmented">
+              {[['compact', 'Compact'], ['normal', 'Normal'], ['comfortable', 'Large']].map(([k, l]) =>
+            <button key={k} className={density === k ? 'active' : ''} onClick={() => {setDensity(k);localStorage.setItem('lp4_density', k);}}>{l}</button>
+            )}
+            </div>
+          } />
+        </Section>
+
+        {/* Calendar */}
+        <Section title="Calendrier">
+          <Row label="Premier jour de la semaine" border={false} right={
+          <div className="segmented">
+              <button className={firstDay === 'monday' ? 'active' : ''} onClick={() => {setFirstDay('monday');localStorage.setItem('lp4_firstDay', 'monday');}}>Lundi</button>
+              <button className={firstDay === 'sunday' ? 'active' : ''} onClick={() => {setFirstDay('sunday');localStorage.setItem('lp4_firstDay', 'sunday');}}>Dimanche</button>
+            </div>
+          } />
+        </Section>
+
+        {/* Notifications */}
+        <Section title="Notifications">
+          <Row label="Demandes de congés" sub="Alerte pour les nouvelles demandes" right={
+          <div className={`toggle${notifLeave ? ' on' : ''}`} onClick={() => {setNotifLeave((v) => {localStorage.setItem('lp4_notifLeave', !v);return !v;});}} />
+          } />
+          <Row label="Absences saisies" sub="Alerte quand une absence est ajoutée" border={false} right={
+          <div className={`toggle${notifAbsence ? ' on' : ''}`} onClick={() => {setNotifAbsence((v) => {localStorage.setItem('lp4_notifAbsence', !v);return !v;});}} />
+          } />
+        </Section>
+
+        {/* Team */}
+        {team &&
+        <Section title="Équipe">
+            <div style={{ padding: '18px 20px', borderBottom: '1px solid var(--border)', display: 'flex', alignItems: 'center', gap: 12 }}>
+              <div style={{ width: 44, height: 44, borderRadius: 12, background: team.color, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontWeight: 700, fontSize: 15, letterSpacing: '-0.5px' }}>
+                {team.name.split(' ').map((w) => w[0]).slice(0, 2).join('').toUpperCase()}
+              </div>
+              <div style={{ flex: 1 }}>
+                <div style={{ fontSize: 15, fontWeight: 600 }}>{team.name}</div>
+                <div className="caption">{team.agents?.length} agents · {team.tournees?.length} tournées</div>
+              </div>
+              <button className="btn btn-secondary btn-sm" onClick={() => setShowTeamSettings(true)}>
+                <Icon name="edit" size={12} /> Modifier
+              </button>
+            </div>
+            <div style={{ padding: '14px 20px', borderBottom: '1px solid var(--border)' }}>
+              <div className="label-sm" style={{ marginBottom: 8 }}>Code d'invitation</div>
+              <div style={{ display: 'flex', gap: 8 }}>
+                <div style={{ flex: 1, height: 42, background: 'var(--surface-2)', borderRadius: 10, display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, fontSize: 18, letterSpacing: 6, color: 'var(--accent)' }}>{team.code}</div>
+                <button className="btn btn-tinted" style={{ height: 42 }} onClick={copyCode}><Icon name="copy" size={14} />{copied ? 'Copié' : 'Copier'}</button>
+                <button className="btn btn-tinted" style={{ height: 42 }} onClick={onJoinTeam}>Rejoindre</button>
+              </div>
+              <div className="caption" style={{ marginTop: 8 }}>Partagez ce code avec vos agents, ou rejoignez une équipe existante.</div>
+            </div>
+            <Row label="Créer une nouvelle équipe" sub="Vous pouvez gérer plusieurs équipes" border={false} right={
+          <button className="btn btn-secondary btn-sm" onClick={onCreateTeam}><Icon name="plus" size={12} /> Créer</button>
+          } />
+          </Section>
+        }
+
+        {/* Data */}
+        <Section title="Données">
+          <Row label="Import Excel" sub="Importer agents et tournées depuis un fichier" right={
+          <button className="btn btn-tinted btn-sm" onClick={onImport}><Icon name="upload" size={12} /> Importer</button>
+          } />
+          <Row label="Réinitialiser l'application" sub="Effacer toutes les données locales" border={false} right={
+          <button className="btn btn-danger-tinted btn-sm" onClick={() => {if (confirm('Effacer toutes les données ? Cette action est irréversible.')) {localStorage.clear();window.location.reload();}}}>Réinitialiser</button>
+          } />
+        </Section>
+
+        <div style={{ textAlign: 'center', fontSize: 11, color: 'var(--text-3)', padding: '14px 0' }}>
+          La Poste RH · v4 · 2026
+        </div>
+      </div>
+
+      {showTeamSettings &&
+      <TeamSettingsModal team={team}
+      canDelete={canDeleteTeam}
+      onDelete={() => {onDeleteTeam(team.id);setShowTeamSettings(false);}}
+      onSave={({ name, color, targetPresence }) => {updateTeam((t) => ({ ...t, name, color, targetPresence }));setShowTeamSettings(false);}}
+      onClose={() => setShowTeamSettings(false)} />
+      }
+    </div>);
+
+}
+
+// ═══ TWEAKS ═════════════════════════════════════════════════════════
+const LP_TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
+  "corners": "soft",
+  "card": "elevated",
+  "calendar": "cozy"
+}/*EDITMODE-END*/;
+
+function LPTweaks(){
+  const [t,setTweak]=useTweaks(LP_TWEAK_DEFAULTS);
+  useEffect(()=>{
+    const h=document.documentElement;
+    h.setAttribute('data-tweak-corners',t.corners);
+    h.setAttribute('data-tweak-card',t.card);
+    h.setAttribute('data-tweak-cal',t.calendar);
+  },[t.corners,t.card,t.calendar]);
+  return(
+    <TweaksPanel title="Tweaks">
+      <TweakSection label="Personnalité"/>
+      <TweakRadio label="Coins" options={['sharp','soft','pill']} value={t.corners} onChange={v=>setTweak('corners',v)}/>
+      <TweakRadio label="Cartes" options={['clean','elevated','outlined']} value={t.card} onChange={v=>setTweak('card',v)}/>
+      <TweakRadio label="Calendrier" options={['dense','standard','cozy']} value={t.calendar} onChange={v=>setTweak('calendar',v)}/>
+    </TweaksPanel>
+  );
+}
+
+// ═══ APP ═══════════════════════════════════════════════════════════════════
+function App() {
+  // Default state
+  const DEFAULT_USER = { id: 'me', name: 'Marie Dupont', email: 'marie.dupont@laposte.fr' };
+  const initialAuth = load('lp4_auth', null);
+  const [user, setUser] = useState(() => load('lp4_user', initialAuth || DEFAULT_USER));
+  const [authUser, setAuthUser] = useState(initialAuth);
+  const [loginName, setLoginName] = useState(authUser?.name || '');
+  const [loginEmail, setLoginEmail] = useState(authUser?.email || '');
+  const [loginError, setLoginError] = useState('');
+  const [teams, setTeams] = useState(() => load('lp4_teams', []));
+  const [absences, setAbsences] = useState(() => load('lp4_abs', {}));
+  const [assignments, setAssignments] = useState(() => load('lp4_assign', {}));
+  const [leaveRequests, setLeaveRequests] = useState(() => load('lp4_leaves', []));
+  const [theme, setTheme] = useState(() => localStorage.getItem('lp4_theme') || 'light');
+  const [accentColor, setAccentColor] = useState(() => localStorage.getItem('lp4_accent') || '#007AFF');
+  const [liquidGlass, setLiquidGlass] = useState(() => localStorage.getItem('lp4_liquidGlass') === 'on');
+  const [curTeamId, setCurTeamId] = useState(() => load('lp4_curTeam', null));
+  const [tab, setTab] = useState('planning');
+  const now = new Date();
+  const [year, setYear] = useState(now.getFullYear());
+  const [month, setMonth] = useState(now.getMonth());
+  const [selDay, setSelDay] = useState(fmt(now));
+  const [absModal, setAbsModal] = useState(null);
+  const [createTeamModal, setCreateTeamModal] = useState(false);
+  const [importModal, setImportModal] = useState(false);
+  const [showJoinModal, setShowJoinModal] = useState(false);
+
+  // Persist
+  useEffect(() => {document.documentElement.setAttribute('data-theme', theme);localStorage.setItem('lp4_theme', theme);}, [theme]);
+  useEffect(() => {document.documentElement.setAttribute('data-liquid-glass', liquidGlass ? 'on' : 'off');localStorage.setItem('lp4_liquidGlass', liquidGlass ? 'on' : 'off');}, [liquidGlass]);
+  useEffect(() => {document.documentElement.style.setProperty('--accent', accentColor);
+    // also update soft accent
+    const hex = accentColor.replace('#', '');
+    document.documentElement.style.setProperty('--accent-soft', `${accentColor}15`);
+    localStorage.setItem('lp4_accent', accentColor);}, [accentColor]);
+  useEffect(() => {save('lp4_user', user);}, [user]);
+  useEffect(() => {save('lp4_auth', authUser);}, [authUser]);
+  useEffect(() => {save('lp4_teams', teams);}, [teams]);
+  useEffect(() => {save('lp4_abs', absences);}, [absences]);
+  useEffect(() => {save('lp4_assign', assignments);}, [assignments]);
+  useEffect(() => {save('lp4_leaves', leaveRequests);}, [leaveRequests]);
+  useEffect(() => {if (curTeamId) save('lp4_curTeam', curTeamId);}, [curTeamId]);
+
+  // Auto-create default team if none
+  useEffect(() => {
+    if (teams.length === 0) {
+      const agents = Array.from({ length: 8 }, (_, i) => ({ id: mkId(), name: `Agent ${i + 1}`, color: AGENT_COLORS[i % AGENT_COLORS.length], prefEnabled: false, preferred: [], managerial: false }));
+      const tournees = Array.from({ length: 20 }, (_, i) => ({ id: mkId(), name: `Tournée ${String(i + 1).padStart(2, '0')}`, color: T_COLORS[i % T_COLORS.length], num: i + 1, categoryId: null }));
+      const categories = [{ id: mkId(), name: 'Remises', color: CAT_COLORS[0] }, { id: mkId(), name: 'Collectes', color: CAT_COLORS[1] }];
+      const t = { id: mkId(), name: 'Mon équipe', color: accentColor, code: generateCode(), targetPresence: 6, agents, tournees, categories };
+      setTeams([t]);setCurTeamId(t.id);
+    }
+  }, []);
+
+  const team = useMemo(() => teams.find((t) => t.id === curTeamId) || teams[0], [teams, curTeamId]);
+  useEffect(() => {if (!curTeamId && teams[0]) setCurTeamId(teams[0].id);}, [curTeamId, teams]);
+
+  const absMap = useMemo(() => {
+    const m = {};(absences[team?.id] || []).forEach((a) => {m[`${a.agentId}__${a.date}`] = a;});
+    return m;
+  }, [absences, team]);
+  const holidays = useMemo(() => getFrHolidays(year), [year]);
+  const pendingCount = useMemo(() => leaveRequests.filter((r) => r.teamId === team?.id && r.status === 'pending').length, [leaveRequests, team]);
+
+  function updateTeam(fn) {if (team) setTeams((prev) => prev.map((t) => t.id === team.id ? fn(t) : t));}
+  function createTeam(t) {setTeams((prev) => [...prev, t]);setCurTeamId(t.id);setCreateTeamModal(false);}
+  function deleteTeam(id) {if (teams.length <= 1) return;setTeams((prev) => {const n = prev.filter((t) => t.id !== id);if (curTeamId === id) setCurTeamId(n[0].id);return n;});}
+
+  function joinTeam(code) {
+    const normalized = String(code || '').trim().toUpperCase();
+    if (!normalized) {alert('Veuillez saisir un code d\'invitation.');return;}
+    const found = teams.find(t => t.code === normalized);
+    if (!found) {alert('Code d\'invitation invalide ou équipe introuvable.');return;}
+    if (found.id === team?.id) {alert('Vous êtes déjà dans cette équipe.');setCurTeamId(found.id);return;}
+    const already = (found.agents || []).some(a => a.userId === user.id || a.email === user.email || a.name === user.name);
+    if (already) {alert('Vous êtes déjà membre de cette équipe.');setCurTeamId(found.id);return;}
+    const newAgent = {
+      id: mkId(),
+      userId: user.id,
+      email: user.email,
+      name: user.name || 'Nouveau membre',
+      color: AGENT_COLORS[(found.agents || []).length % AGENT_COLORS.length],
+      prefEnabled: false,
+      preferred: [],
+      managerial: false
+    };
+    setTeams((prev) => prev.map(t => t.id === found.id ? {...t, agents: [...t.agents, newAgent]} : t));
+    setCurTeamId(found.id);
+    setShowJoinModal(false);
+    alert(`Vous avez rejoint l'équipe ${found.name}.`);
+  }
+
+  function saveAbsence(agentId, dates, type, dateFrom, dateTo) {
+    if (!team) return;
+    setAbsences((prev) => {
+      const ta = prev[team.id] || [];
+      const filtered = ta.filter((a) => !(a.agentId === agentId && dates.includes(a.date)));
+      const added = dates.map((d) => ({ agentId, date: d, type, dateFrom, dateTo }));
+      return { ...prev, [team.id]: [...filtered, ...added] };
+    });
+    setAbsModal(null);
+  }
+  function deleteAbsence(agentId, date) {
+    if (!team) return;
+    setAbsences((prev) => ({ ...prev, [team.id]: (prev[team.id] || []).filter((a) => !(a.agentId === agentId && a.date === date)) }));
+    setAbsModal(null);
+  }
+  function requestLeave(req) {setLeaveRequests((prev) => [...prev, req]);}
+  function reviewLeave(id, status, managerNote) {
+    setLeaveRequests((prev) => {
+      const req = prev.find((r) => r.id === id);
+      if (!req) return prev;
+      const agentId = req.agentId || req.userId;
+      // Build affected dates
+      const dates = [];let cur = parseD(req.dateFrom);const end = parseD(req.dateTo);
+      while (cur <= end) {dates.push(fmt(cur));cur.setDate(cur.getDate() + 1);}
+      // Side-effects on absences
+      if (status === 'approved') {
+        setAbsences((ab) => {
+          const ta = ab[req.teamId] || [];
+          const filtered = ta.filter((a) => !(a.agentId === agentId && dates.includes(a.date)));
+          const added = dates.map((d) => ({ agentId, date: d, type: req.type, dateFrom: req.dateFrom, dateTo: req.dateTo, leaveId: id }));
+          return { ...ab, [req.teamId]: [...filtered, ...added] };
+        });
+      } else if (req.status === 'approved' && (status === 'cancelled' || status === 'refused' || status === 'pending')) {
+        // Remove absences linked to this leave
+        setAbsences((ab) => ({ ...ab, [req.teamId]: (ab[req.teamId] || []).filter((a) => a.leaveId !== id) }));
+      }
+      return prev.map((r) => r.id === id ? { ...r, status, managerNote } : r);
+    });
+  }
+  function applyImport({ agents, tournees }) {updateTeam((t) => ({ ...t, agents, tournees }));setImportModal(false);}
+  function exportCSV() {
+    if (!team) return;
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+    const rows = [['Agent', ...Array.from({ length: daysInMonth }, (_, i) => `${year}-${String(month + 1).padStart(2, '0')}-${String(i + 1).padStart(2, '0')}`)].join(',')];
+    (team.agents || []).forEach((a) => {
+      const cells = [a.name];
+      for (let d = 1; d <= daysInMonth; d++) {const ds = `${year}-${String(month + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;cells.push(absMap[`${a.id}__${ds}`]?.type || 'P');}
+      rows.push(cells.join(','));
+    });
+    const b = new Blob([rows.join('\n')], { type: 'text/csv' });const u = URL.createObjectURL(b);
+    const a = document.createElement('a');a.href = u;a.download = `planning_${team.name}_${year}_${month + 1}.csv`;a.click();
+  }
+
+  function handleLogin() {
+    const email = loginEmail.trim().toLowerCase();
+    const name = loginName.trim();
+    if (!name || !email) {setLoginError('Veuillez saisir votre nom et votre email.');return;}
+    if (!email.includes('@')) {setLoginError('Veuillez saisir une adresse email valide.');return;}
+    const profile = { id: email, name, email };
+    setUser(profile);
+    setAuthUser(profile);
+    setLoginError('');
+  }
+
+  function handleLogout() {
+    setAuthUser(null);
+  }
+
+  if (!authUser) {
+    return (
+      <div id="root" style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'linear-gradient(180deg, #F0F4FF 0%, #FFFFFF 100%)', padding: 20 }}>
+        <div style={{ width: '100%', maxWidth: 420, borderRadius: 24, padding: 32, boxShadow: '0 28px 80px rgba(0,0,0,0.12)', background: 'rgba(255,255,255,0.96)', border: '1px solid rgba(29,29,31,0.06)' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 24 }}>
+            <img src="assets/laposte.png" alt="La Poste" style={{ width: 42, height: 42, borderRadius: 12, objectFit: 'cover' }} />
+            <div>
+              <div style={{ fontSize: 20, fontWeight: 700, color: 'var(--text)' }}>Tournéa</div>
+              <div style={{ fontSize: 13, color: 'var(--text-2)' }}>Connexion agent</div>
+            </div>
+          </div>
+          <div style={{ marginBottom: 20, color: 'var(--text-2)', lineHeight: 1.6 }}>Connectez-vous pour accéder à votre planning et aux tournées. La première connexion sera mémorisée automatiquement pour la prochaine fois.</div>
+          <div style={{ display: 'grid', gap: 14 }}>
+            <label className="field-label">Nom</label>
+            <input className="input" type="text" value={loginName} onChange={(e) => setLoginName(e.target.value)} placeholder="Marie Dupont" />
+            <label className="field-label">Email</label>
+            <input className="input" type="email" value={loginEmail} onChange={(e) => setLoginEmail(e.target.value)} placeholder="marie.dupont@laposte.fr" />
+            {loginError && <div style={{ color: '#D92B2B', fontSize: 13 }}>{loginError}</div>}
+            <button className="btn btn-primary" style={{ width: '100%', justifyContent: 'center' }} onClick={handleLogin}>Se connecter</button>
+            <button className="btn btn-ghost" style={{ width: '100%', justifyContent: 'center' }} onClick={() => {setLoginName(''); setLoginEmail(''); setLoginError('');}}>Effacer</button>
+          </div>
+          <div style={{ marginTop: 24, fontSize: 12, color: 'var(--text-3)' }}>Besoin d’un compte agent ? Demandez à votre responsable de créer votre profil dans l’application.</div>
+        </div>
+      </div>
+    );
+  }
+
+  if (!team) return null;
+
+  return (
+    <div id="root">
+      <div className="topbar">
+        <div style={{ display: 'flex', alignItems: 'center', gap: 14, marginRight: 14 }}>
+          <img src="assets/laposte.png" alt="La Poste" style={{ height: 32, width: 'auto', display: 'block', background: 'transparent' }}/>
+          <div style={{ width: 1, height: 28, background: 'var(--border)' }}/>
+          <img src="assets/logissimo.png" alt="Log'issimo" style={{ height: 28, width: 'auto', display: 'block', background: 'transparent' }}/>
+        </div>
+        <div style={{ display: 'flex', alignItems: 'baseline', gap: 1,
+          fontFamily: "'Bebas Neue', 'Inter', sans-serif", fontSize: 32, lineHeight: 1, letterSpacing: '0.5px', fontWeight: 400 }}>
+          <span style={{ color: '#FFD100' }}>T</span>
+          <span style={{ color: '#FFD100' }}>O</span>
+          <span style={{ color: '#FFD100' }}>U</span>
+          <span style={{ color: '#FFD100' }}>R</span>
+          <span style={{ color: '#FFD100' }}>N</span>
+          <span style={{ color: '#FFD100' }}>É</span>
+          <span style={{ color: '#1D3D8C' }}>A</span>
+        </div>
+        <div style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: 10 }}>
+          <div style={{ width: 8, height: 8, borderRadius: '50%', background: team.color || '#FFD100', flexShrink: 0,
+            boxShadow: `0 0 0 3px ${team.color || '#FFD100'}22` }}/>
+          <div style={{ display: 'flex', flexDirection: 'column', lineHeight: 1.15 }}>
+            <span style={{ fontSize: 13, fontWeight: 500, color: 'var(--text)' }}>{team.name}</span>
+            <span style={{ fontSize: 10.5, color: 'var(--text-2)', letterSpacing: '.2px' }}>
+              <span style={{ fontVariantNumeric: 'tabular-nums', color: 'var(--text)', fontWeight: 500 }}>{team.agents?.length || 0}</span> agents
+              <span style={{ margin: '0 5px', color: 'var(--text-3)' }}>·</span>
+              <span style={{ fontVariantNumeric: 'tabular-nums', color: 'var(--text)', fontWeight: 500 }}>{team.tournees?.length || 0}</span> tournées
+            </span>
+          </div>
+        </div>
+        <div style={{ display: 'flex', gap: 8 }}>
+          {tab === 'planning' && <>
+            <button className="btn btn-ghost btn-icon" onClick={() => window.print()} title="Imprimer"><Icon name="printer" size={16} /></button>
+          </>}
+          <button className="btn btn-tinted" onClick={() => setImportModal(true)}><Icon name="upload" size={14} /> Import</button>
+          <button className="btn btn-ghost" onClick={handleLogout}>Déconnexion</button>
+        </div>
+      </div>
+
+      <div className="shell">
+        <Sidebar user={user} teams={teams} curTeamId={team.id} setCurTeamId={setCurTeamId}
+        tab={tab} setTab={setTab} pendingCount={pendingCount}
+        onCreateTeam={() => setCreateTeamModal(true)} />
+
+        <div className="main">
+          {tab === 'planning' &&
+          <PlanningView team={team}
+          year={year} month={month} setYear={setYear} setMonth={setMonth}
+          selDay={selDay} setSelDay={setSelDay}
+          absMap={absMap} assignments={assignments} setAssignments={setAssignments}
+          onCellClick={(agent, ds) => setAbsModal({ agent, date: ds, existing: absMap[`${agent.id}__${ds}`] })}
+          holidays={holidays} updateTeam={updateTeam} />
+          }
+          {tab === 'optimisation' && <OptimisationView team={team} selDay={selDay} setSelDay={setSelDay} absMap={absMap} assignments={assignments} setAssignments={setAssignments} />}
+          {tab === 'leaves' && <LeavesView team={team} user={user} leaveRequests={leaveRequests} onRequestLeave={requestLeave} onReviewLeave={reviewLeave} />}
+          {tab === 'agents' && <AgentsView team={team} updateTeam={updateTeam} absMap={absMap} selDay={selDay} />}
+          {tab === 'tournees' && <TourneesView team={team} updateTeam={updateTeam} />}
+          {tab === 'dashboard' && <DashboardView team={team} absMap={absMap} leaveRequests={leaveRequests} year={year} month={month} assignments={assignments} setYear={setYear} setMonth={setMonth} selDay={selDay} setSelDay={setSelDay} />}
+          {tab === 'settings' && <SettingsView user={user} team={team} updateTeam={updateTeam}
+          onImport={() => setImportModal(true)} onCreateTeam={() => setCreateTeamModal(true)} onJoinTeam={() => setShowJoinModal(true)}
+          theme={theme} setTheme={setTheme} accentColor={accentColor} setAccentColor={setAccentColor}
+          liquidGlass={liquidGlass} setLiquidGlass={setLiquidGlass}
+          setUser={setUser} onDeleteTeam={deleteTeam} canDeleteTeam={teams.length > 1} onLogout={handleLogout} />}
+        </div>
+      </div>
+
+      {/* Mobile tab bar */}
+      <div className="tabbar">
+        {[
+        { k: 'planning', icon: 'calendar', label: 'Planning' },
+        { k: 'leaves', icon: 'leaf', label: 'Congés' },
+        { k: 'dashboard', icon: 'chart', label: 'Stats' },
+        { k: 'settings', icon: 'settings', label: 'Réglages' }].
+        map((n) =>
+        <div key={n.k} className={`tabbar-item${tab === n.k ? ' active' : ''}`} onClick={() => setTab(n.k)}>
+            <Icon name={n.icon} size={22} />
+            <span>{n.label}</span>
+          </div>
+        )}
+      </div>
+
+      {absModal && <AbsenceModal {...absModal} onSave={saveAbsence} onDelete={deleteAbsence} onClose={() => setAbsModal(null)} />}
+      {createTeamModal && <CreateTeamModal onSave={createTeam} onClose={() => setCreateTeamModal(false)} />}
+      {importModal && team && <ImportModal onApply={applyImport} onClose={() => setImportModal(false)} />}
+      {showJoinModal && <JoinTeamModal onJoin={joinTeam} onClose={() => setShowJoinModal(false)} />}
+
+      <LPTweaks/>
+    </div>);
+
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+</script>
+</body>
+</html>
